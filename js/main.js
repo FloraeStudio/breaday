@@ -133,6 +133,9 @@ function initHeroSlideshow() {
 // ---------- 通用捲動視差:給任何帶 data-parallax="速度" 的元素用 ----------
 // 速度是 0~1 的相對值,數字越大位移越明顯。之後 Products / Contact 要加視差,
 // 直接在該元素上補一個 data-parallax 屬性即可,不用再寫新的滾動邏輯。
+const PARALLAX_STRENGTH = 300; // 振幅倍率：先前用 100，對 0.06~0.16 這種小 speed 值只會位移 3~8px，
+                                // 肉眼幾乎看不出來(跟 hero 的 ±150px 差太多),調到 300 讓其他區塊也感覺得到
+
 function initParallax() {
   const els = document.querySelectorAll('[data-parallax]');
   if (!els.length) return;
@@ -151,7 +154,7 @@ function initParallax() {
       const rect = item.el.getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
       const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
-      item.target = (centerOffset / window.innerHeight) * -100 * item.speed;
+      item.target = (centerOffset / window.innerHeight) * -PARALLAX_STRENGTH * item.speed;
     });
   };
 

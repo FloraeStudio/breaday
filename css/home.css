@@ -477,18 +477,29 @@
    帶一點固定的傾斜角度,像隨手貼上去的紙拼貼,呼應「去模板化」——不做對稱雙欄圖文 */
 .about-visual {
     flex-shrink: 0;
-    width: clamp(200px, 22vw, 300px);
-    align-self: flex-start;
-    margin: -4px 4px 0 auto;
+    width: clamp(160px, 16vw, 220px);
+    align-self: flex-end;
+    margin: 0 10px 4px auto;
+    position: relative;
     opacity: 0;
-    transform: rotate(-3deg) translateY(28px);
+    transform: rotate(-2deg) translateY(28px);
     transition: opacity 1s cubic-bezier(.22, .68, 0, 1), transform 1s cubic-bezier(.22, .68, 0, 1);
     transition-delay: .35s;
 }
 
+/* 淡淡的暈染背景,讓插畫看起來像畫在紙上,不是硬貼上去的貼紙 */
+.about-visual::before {
+    content: '';
+    position: absolute;
+    inset: -14%;
+    background: radial-gradient(circle, var(--color-accent-soft) 0%, transparent 70%);
+    opacity: 0.3;
+    z-index: -1;
+}
+
 .about-text.is-visible .about-visual {
     opacity: 1;
-    transform: rotate(-3deg) translateY(0);
+    transform: rotate(-2deg) translateY(0);
 }
 
 /* 視差位移交給獨立的內層處理,避免跟外層的浮現位移(transform)互相覆蓋 */
@@ -500,6 +511,7 @@
     display: block;
     width: 100%;
     height: 100%;
+    filter: grayscale(0.3) sepia(0.22) saturate(0.85) contrast(0.96);
 }
 
 @media (max-width:860px) {
@@ -513,7 +525,7 @@
 @media (prefers-reduced-motion: reduce) {
     .about-visual {
         opacity: 1;
-        transform: rotate(-3deg);
+        transform: rotate(-2deg);
         transition: none;
     }
 }
