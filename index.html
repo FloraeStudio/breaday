@@ -3,17 +3,16 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BREADAY 台灣 | 每日,從一份麵包開始</title>
+  <meta name="viewport" content="width=device-width， initial-scale=1.0">
+  <title>BREADAY 台灣 | 每日，從一份麵包開始</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Noto+Serif+TC:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz，wght@9..144，300;9..144，400;9..144，500&family=Noto+Serif+TC:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap"
     rel="stylesheet">
 
   <link rel="stylesheet" href="css/main.css">
-  <script type="module" src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.21/dist/dotlottie-wc.js"></script>
 </head>
 
 <body>
@@ -42,8 +41,8 @@
       </div>
       <div class="hero-copy">
         <div class="hero-eyebrow">TAIWAN — SINCE 2026</div>
-        <h1 class="hero-title char-reveal">每一天,<br>從一份麵包開始。</h1>
-        <p class="hero-desc">我們想成為「讓人每天都想吃」的麵包店。只選熊本小麥與看得安心的食材,細心做好每一份麵包。</p>
+        <h1 class="hero-title char-reveal">每一天，<br>從一份好麵包開始。</h1>
+        <p class="hero-desc">我們「希望成為讓人每天都想吃的麵包店」。只選熊本縣產小麥與能安心食用的食材，細心做好每一份麵包。</p>
       </div>
       <div class="hero-media-mark" aria-hidden="true"><span class="hero-media-mark-in">BREADAY</span></div>
     </section>
@@ -63,17 +62,17 @@
           <span>ABOUT</span>
         </div>
         <div class="about-text-body">
-          <h2 class="about-title">用日常的心意,<br>做值得每天期待的麵包。</h2>
+          <h2 class="about-title">用日常的心意，<br>做值得每天期待的麵包。</h2>
           <div class="about-divider" aria-hidden="true"></div>
           <div class="about-body">
-            <p>BREADAY 起源於日本熊本,我們始終相信,好的麵包該是「讓人每天都想吃」的存在,堅持選用熊本在地小麥,只用看得安心的食材,細膩地對待每一次發酵與烘烤。熊本地震曾讓我們暫停了迎接客人、暫停了每天出爐的日常,但我們沒有停下做麵包這件事——只是換一種方式,把這份心意繼續送到你手上。</p>
-            <p>來到台灣,我們把這份堅持原封不動地留著,也依循在地飲食習慣調整配方,盼望成為你日常裡,一份安心又期待的存在。</p>
+            <p>我們以「希望成為讓人每天都想吃的麵包店」為目標，用心地進行每天的麵包製作。</p>
+            <p>
+              受到熊本地震的影響，BREADAY目前暫停了實體店面的營業。過去，每天在店裡迎接大家、為大家送上剛出爐的麵包，是我們的日常。然而現在，這樣的日常按下了暫停鍵。即便如此，我們並不想「停下」，而是想用不同的形式，把麵包送到大家手中。
+            </p>
           </div>
         </div>
-        <div class="about-visual" aria-hidden="true">
-          <div class="about-visual-inner" data-parallax="0.14">
-            <dotlottie-wc src="assets/images/about/Bread%20guy.lottie?v=2" autoplay loop speed="0.85"></dotlottie-wc>
-          </div>
+        <div class="about-quote" aria-hidden="true">
+          <span>一份日常，一份心意。</span>
         </div>
       </div>
     </section>
@@ -82,11 +81,14 @@
     <section class="section section-alt" id="products">
       <div class="container">
         <div class="products-head scroll-reveal">
-          <div class="section-index" aria-hidden="true" data-parallax="0.06">
+          <div class="section-index" aria-hidden="true">
             <span>02</span>
             <span>PRODUCT LIST</span>
           </div>
-          <h2 class="products-title">本週精選</h2>
+          <div class="products-head-text">
+            <h2 class="products-title">本週精選</h2>
+            <div class="products-divider" aria-hidden="true"></div>
+          </div>
         </div>
 
         <div class="products-grid" id="product-grid">
@@ -106,8 +108,9 @@
             <span>CONTACT</span>
           </div>
           <div class="contact-body">
-            <h2 class="about-title contact-title">想預訂,或想更了解 BREADAY?</h2>
-            <p class="contact-desc">歡迎透過以下方式與我們聯繫,我們會盡快回覆你的訊息。</p>
+            <h2 class="about-title contact-title">想預訂，或想更了解 BREADAY?</h2>
+            <div class="contact-divider" aria-hidden="true"></div>
+            <p class="contact-desc">歡迎透過以下方式與我們聯繫，我們會盡快回覆你的訊息。</p>
             <a href="#" class="btn btn-accent contact-btn">聯絡我們</a>
           </div>
         </div>
@@ -116,29 +119,34 @@
   </main>
 
   <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div>
+    <div class="container footer-inner">
+      <div class="footer-main">
+        <div class="footer-brand">
           <div class="footer-logo">BREADAY</div>
-          <p class="footer-desc">來自日本熊本的麵包品牌,現在台灣。每一天,從一份麵包開始。</p>
+          <p class="footer-desc">希望成為讓人每天都想吃的麵包店。</p>
         </div>
-        <div class="footer-col">
-          <div class="footer-col-title">EXPLORE</div>
-          <ul>
-            <li><a href="#about">關於我們</a></li>
-            <li><a href="#products">所有商品</a></li>
-            <li><a href="#contact">聯絡我們</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <div class="footer-col-title">INFO</div>
-          <ul>
-            <li>營業時間:待補</li>
-            <li>客服信箱:待補</li>
-            <li>社群連結:待補</li>
-          </ul>
+
+        <div class="footer-links">
+          <div class="footer-col">
+            <div class="footer-col-title">EXPLORE</div>
+            <ul>
+              <li><a href="#about">關於我們</a></li>
+              <li><a href="#products">本週精選</a></li>
+              <li><a href="#contact">聯絡我們</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <div class="footer-col-title">INFO</div>
+            <ul>
+              <li>可提供批發服務</li>
+              <li>營業時間：10:00 – 18:00</li>
+              <li>公休日：星期二</li>
+              <li><a href="https://www.instagram.com/breaday2023/" target="_blank" rel="noopener">Instagram</a></li>
+            </ul>
+          </div>
         </div>
       </div>
+
       <div class="footer-bottom">
         <span>© 2026 BREADAY Taiwan</span>
         <span>隱私權政策 ・ 服務條款</span>

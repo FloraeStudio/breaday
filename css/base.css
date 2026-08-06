@@ -76,30 +76,48 @@ button:focus-visible {
 }
 
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  letter-spacing: 0.06em;
-  padding: 14px 28px;
-  border: 1px solid var(--color-text);
+  letter-spacing: 0.3em;
+  line-height: 1;
+  padding: 4px 2px 6px;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-text);
   width: fit-content;
-  transition: background .25s ease, color .25s ease;
+  transition: letter-spacing .35s cubic-bezier(.22, .68, 0, 1),
+    border-color .35s ease,
+    border-width .35s ease,
+    color .35s ease;
 }
 
 .btn:hover {
-  background: var(--color-text);
-  color: var(--color-white);
+  letter-spacing: 0.5em;
+  color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .btn-accent {
-  border-color: var(--color-accent);
   color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .btn-accent:hover {
-  background: var(--color-accent);
-  color: var(--color-white);
+  color: var(--color-text);
+  border-color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: border-color .35s ease, color .35s ease;
+  }
+
+  .btn:hover {
+    letter-spacing: 0.08em;
+    outline-offset: 8px;
+  }
 }
 
 .placeholder-note {

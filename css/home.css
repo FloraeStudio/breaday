@@ -41,17 +41,21 @@
 .hero-copy {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;   /* 貼齊底部，跟照片下半部細節、浮水印共用同一條基準線，不再是無腦垂直置中 */
-    padding: 64px 64px 72px 96px;   /* 左邊留給直排側標的位置 */
+    justify-content: flex-end;
+    /* 貼齊底部，跟照片下半部細節、浮水印共用同一條基準線，不再是無腦垂直置中 */
+    padding: 64px 64px 72px 96px;
+    /* 左邊留給直排側標的位置 */
     position: relative;
-    z-index: 3;   /* 蓋過 .hero-media-mark(z-index:2)，讓文字永遠浮在浮水印上層 */
+    z-index: 3;
+    /* 蓋過 .hero-media-mark(z-index:2)，讓文字永遠浮在浮水印上層 */
     will-change: transform;
 }
 
 @media (max-width:860px) {
     .hero-copy {
         padding: 48px 32px 40px 32px;
-        background: var(--color-bg);   /* 手機版欄位不夠寬，浮水印容易貼死文字，還是給實心底比較保險 */
+        background: var(--color-bg);
+        /* 手機版欄位不夠寬，浮水印容易貼死文字，還是給實心底比較保險 */
     }
 }
 
@@ -137,7 +141,6 @@
     color: var(--color-text-soft);
     max-width: 36ch;
     padding: 2px 0 2px 18px;
-    border-left: 1px solid var(--color-line);
 }
 
 /* 一條細線從文案延伸向浮水印，讓兩個排版系統視覺上有呼應，
@@ -188,6 +191,7 @@
 }
 
 @media (max-width:860px) {
+
     .hero-desc::after,
     .hero-desc::before {
         display: none;
@@ -196,7 +200,8 @@
 
 .hero-media-mark {
     position: absolute;
-    right: 108px;   /* 整串字往左推，讓大半筆畫落在照片裡，只有字尾跨進文字欄 */
+    right: 108px;
+    /* 整串字往左推，讓大半筆畫落在照片裡，只有字尾跨進文字欄 */
     bottom: 56px;
     font-family: var(--font-display-en);
     font-weight: 300;
@@ -467,65 +472,127 @@
     line-height: 1.8;
     color: var(--color-text-soft);
     margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .8s cubic-bezier(.22, .68, 0, 1), transform .8s cubic-bezier(.22, .68, 0, 1);
+}
+
+/* 兩段文字錯開浮現，讓「一大塊文字」不是同時一起蹦出來，
+   而是像被閱讀的節奏一樣一句接一句浮上來 */
+.about-text.is-visible .about-body p {
+    opacity: 1;
+    transform: none;
+}
+
+.about-body p:nth-child(1) {
+    transition-delay: .1s;
+}
+
+.about-body p:nth-child(2) {
+    transition-delay: .3s;
 }
 
 .about-body p:last-child {
     margin-bottom: 0;
 }
 
-/* 麵包吉祥物 lottie 動畫:放大成有存在感的插畫,貼齊標題頂端(不是縮在文字區塊右下角當小圖示),
-   帶一點固定的傾斜角度,像隨手貼上去的紙拼貼,呼應「去模板化」——不做對稱雙欄圖文 */
-.about-visual {
+@media (prefers-reduced-motion: reduce) {
+    .about-body p {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* ---------- 呼吸感:給裝飾性、非互動元素的低調待機動畫 ----------
+   跟客戶明確否決的「跑馬燈/掃光」不同——這裡不是顏色循環、不是無限吸睛，
+   只是進場結束後，數字/圓點極輕微地放大縮小、明暗一次，像呼吸一樣緩慢(4~5s一輪)，
+   讓頁面「活著」但不會搶走內容的注意力。只用在裝飾性元素上，按鈕/連結一律維持只用 hover。 */
+@keyframes breathe {
+
+    0%,
+    100% {
+        opacity: 0.85;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes breatheDot {
+
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 0.75;
+    }
+}
+
+.section-index span:first-child {
+    display: inline-block;
+    animation: breathe 4.5s ease-in-out infinite;
+    animation-delay: 1.6s;
+}
+
+/* 圓點的呼吸動畫要等進場 transition 跑完才開始(delay 抓在 .75s 延遲 + .5s 動畫時長之後)，
+   不然會跟原本「淡入一次」的 transition 互相打架、圓點會在使用者捲到之前就先閃現 */
+.about-text.is-visible .about-divider::after {
+    animation: breatheDot 4s ease-in-out infinite;
+    animation-delay: 1.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .section-index span:first-child,
+    .about-text.is-visible .about-divider::after {
+        animation: none;
+    }
+}
+
+/* 拿掉吉祥物插畫,回歸純文字。右側原本放插畫的位置改成一段直排短語,
+   跟 hero-eyebrow / section-index 同一套「細線 + 直排字」語彙,
+   讓留白不是「什麼都沒有」,而是有一個安靜的收尾錨點——雜誌內頁常見的手法 */
+.about-quote {
     flex-shrink: 0;
-    width: clamp(160px, 16vw, 220px);
-    align-self: flex-end;
-    margin: 0 10px 4px auto;
-    position: relative;
+    align-self: stretch;
+    display: flex;
+    align-items: flex-end;
+    writing-mode: vertical-rl;
+    padding-left: 18px;
+    margin: 0 4px 4px auto;
+    border-left: 1px solid var(--color-line);
+    font-family: var(--font-display-zh);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: var(--color-text-soft);
     opacity: 0;
-    transform: rotate(-2deg) translateY(28px);
+    transform: translateY(16px);
     transition: opacity 1s cubic-bezier(.22, .68, 0, 1), transform 1s cubic-bezier(.22, .68, 0, 1);
     transition-delay: .35s;
 }
 
-/* 淡淡的暈染背景,讓插畫看起來像畫在紙上,不是硬貼上去的貼紙 */
-.about-visual::before {
-    content: '';
-    position: absolute;
-    inset: -14%;
-    background: radial-gradient(circle, var(--color-accent-soft) 0%, transparent 70%);
-    opacity: 0.3;
-    z-index: -1;
-}
-
-.about-text.is-visible .about-visual {
-    opacity: 1;
-    transform: rotate(-2deg) translateY(0);
-}
-
-/* 視差位移交給獨立的內層處理,避免跟外層的浮現位移(transform)互相覆蓋 */
-.about-visual-inner {
-    aspect-ratio: 934 / 1058;
-}
-
-.about-visual-inner dotlottie-wc {
-    display: block;
-    width: 100%;
-    height: 100%;
-    filter: grayscale(0.3) sepia(0.22) saturate(0.85) contrast(0.96);
+.about-text.is-visible .about-quote {
+    opacity: 0.85;
+    transform: translateY(0);
 }
 
 @media (max-width:860px) {
-    .about-visual {
-        width: 160px;
-        align-self: center;
-        margin: 20px auto 0;
+    .about-quote {
+        display: none;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .about-visual {
-        opacity: 1;
-        transform: rotate(-2deg);
+    .about-quote {
+        opacity: 0.85;
+        transform: none;
         transition: none;
     }
 }
@@ -538,34 +605,57 @@
     margin-bottom: 56px;
 }
 
+.products-head-text {
+    display: flex;
+    flex-direction: column;
+}
+
 .products-title {
     font-family: var(--font-display-zh);
     font-weight: 500;
     font-size: clamp(22px, 3vw, 28px);
 }
 
-/* 6 個商品排成不對稱的 bento:第一件放大跨兩列,右側兩件疊起來補滿高度,
-   最下面三件才是等寬——刻意打破「三欄等寬格線」這個最容易被認出樣板的地方 */
+/* 跟 about-divider / hero-desc::after 同一套「生長線只跑一次」語彙，
+   讓標題底下也有這條線呼應，捲到才長出來 */
+.products-divider {
+    width: 48px;
+    height: 1px;
+    background: var(--color-accent);
+    opacity: 0.6;
+    margin-top: 16px;
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform .8s cubic-bezier(.22, .68, 0, 1);
+    transition-delay: .2s;
+}
+
+.products-head.is-visible .products-divider {
+    transform: scaleX(1);
+}
+
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 40px 24px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px 28px;
+    counter-reset: product-counter;
 }
 
-.product-card:nth-child(1) {
-    grid-column: span 3;
-    grid-row: span 2;
+.product-media {
+    aspect-ratio: 4 / 5;
 }
 
-.product-card:nth-child(2),
-.product-card:nth-child(3) {
-    grid-column: span 3;
+@media (max-width:860px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 20px;
+    }
 }
 
-.product-card:nth-child(4),
-.product-card:nth-child(5),
-.product-card:nth-child(6) {
-    grid-column: span 2;
+@media (max-width:520px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width:860px) {
@@ -576,13 +666,33 @@
 
     .product-card:nth-child(n) {
         grid-column: span 1;
-        grid-row: span 1;
+    }
+
+    /* 平板上留一件放大,維持「不是每件都一樣大」的節奏 */
+    .product-card:nth-child(1) {
+        grid-column: span 2;
+    }
+
+    .product-card:nth-child(1) .product-media {
+        aspect-ratio: 16 / 10;
+    }
+
+    .product-card:nth-child(6) .product-media {
+        aspect-ratio: 4 / 3;
     }
 }
 
 @media (max-width:520px) {
     .products-grid {
         grid-template-columns: 1fr;
+    }
+
+    .product-card:nth-child(1) {
+        grid-column: span 1;
+    }
+
+    .product-card:nth-child(1) .product-media {
+        aspect-ratio: 4 / 3;
     }
 }
 
@@ -593,7 +703,6 @@
 .product-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
     counter-increment: product-counter;
 }
 
@@ -603,27 +712,28 @@
 }
 
 .product-media {
-    flex: 1;
-    min-height: 220px;
+    width: 100%;
     margin-bottom: 18px;
     position: relative;
     overflow: hidden;
 }
 
-/* 圖片層用 inset:0 貼滿容器(用絕對數值,不是百分比高度——絕對定位元素的
-   百分比高度在 flex item 底下常常算不出來,會直接塌陷成 0),
-   視差需要的位移餘量改用 scale(1.18) 生出來,滾動位移時才不會露出容器邊緣 */
 .product-media-img {
     position: absolute;
     inset: 0;
     background: linear-gradient(150deg, #E9DCC7, #C9AD8E);
     background-size: cover;
     background-position: center;
-    transform: scale(1.18);
-    transform-origin: center;
+    transition: transform .6s cubic-bezier(.22, .68, 0, 1);
 }
 
-/* 用 CSS counter 產生的編號取代原本單調的小標籤,疊在圖角、跟 hero 浮水印同一套鏤空字語彙 */
+/* 唯一跟著游標動的地方留在 hover——滑過去才有反應,不做待機視差 */
+.product-card:hover .product-media-img {
+    transform: scale(1.06);
+}
+
+/* 用 CSS counter 產生的編號取代原本單調的小標籤,疊在圖角、跟 hero 浮水印同一套鏤空字語彙,
+   進場後帶一點極輕的呼吸感,讓格線不是完全靜止的畫面 */
 .product-media::before {
     content: counter(product-counter, decimal-leading-zero);
     position: absolute;
@@ -637,6 +747,9 @@
     mix-blend-mode: overlay;
     pointer-events: none;
     z-index: 1;
+    display: inline-block;
+    animation: breathe 5s ease-in-out infinite;
+    animation-delay: 2.2s;
 }
 
 .product-tag {
@@ -652,8 +765,27 @@
 }
 
 .product-name {
+    position: relative;
+    display: inline-block;
     font-size: 15px;
     margin-bottom: 6px;
+}
+
+/* 跟 nav a::after 同一套底線語彙——hover 才畫出來,離開歸零,
+   讓商品名稱也有可互動的反饋,不是純靜態文字 */
+.product-name::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background: var(--color-accent);
+    transition: width .3s ease;
+}
+
+.product-card:hover .product-name::after {
+    width: 100%;
 }
 
 .product-price {
@@ -663,6 +795,23 @@
 
 .products-more {
     margin: 56px 0 0 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .products-divider {
+        transition: none;
+        transform: scaleX(1);
+    }
+
+    .product-media::before {
+        animation: none;
+    }
+
+    .product-card,
+    .product-card:hover {
+        transform: none;
+        transition: none;
+    }
 }
 
 /* ---------- Contact ---------- */
@@ -689,7 +838,25 @@
 }
 
 .contact-title {
-    margin-bottom: 16px;
+    margin-bottom: 0;
+}
+
+/* 跟 about-divider / products-divider 同一套生長線,捲到才長出來,
+   讓 Contact 不再只有置中按鈕一個互動點 */
+.contact-divider {
+    width: 56px;
+    height: 1px;
+    background: var(--color-accent);
+    opacity: 0.6;
+    margin: 20px 0 24px;
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform .8s cubic-bezier(.22, .68, 0, 1);
+    transition-delay: .25s;
+}
+
+.contact-grid.is-visible .contact-divider {
+    transform: scaleX(1);
 }
 
 .contact-desc {
@@ -697,8 +864,42 @@
     color: var(--color-text-soft);
     max-width: 34ch;
     margin-bottom: 28px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .7s cubic-bezier(.22, .68, 0, 1), transform .7s cubic-bezier(.22, .68, 0, 1);
+    transition-delay: .4s;
+}
+
+.contact-grid.is-visible .contact-desc {
+    opacity: 1;
+    transform: none;
 }
 
 .contact-btn {
     margin: 0;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .7s cubic-bezier(.22, .68, 0, 1) .55s,
+        transform .7s cubic-bezier(.22, .68, 0, 1) .55s,
+        letter-spacing .35s ease, border-color .35s ease, color .35s ease,
+        outline-color .35s ease, outline-offset .35s ease;
+}
+
+.contact-grid.is-visible .contact-btn {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .contact-divider {
+        transition: none;
+        transform: scaleX(1);
+    }
+
+    .contact-desc,
+    .contact-btn {
+        opacity: 1;
+        transform: none;
+        transition: letter-spacing .35s ease, border-color .35s ease, color .35s ease, outline-color .35s ease, outline-offset .35s ease;
+    }
 }
