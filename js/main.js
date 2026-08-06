@@ -1,12 +1,20 @@
 import { getProducts } from './data-service.js';
-import { renderProducts } from './render.js';
+import { renderProducts, renderProductList } from './render.js';
+import { loadLayout } from './partials.js';
 
 // ---------- 產品渲染 ----------
+// #product-grid:所有商品頁(products.html)的完整格線
+// #featured-grid:首頁(index.html)的精選預覽,只取前 3 件
+const FEATURED_COUNT = 3;
+
 async function initProducts() {
-  const grid = document.getElementById('product-grid');
-  if (!grid) return;
+  const featuredGrid = document.getElementById('featured-grid');
+  const fullList = document.getElementById('product-list');
+  if (!featuredGrid && !fullList) return;
+
   const products = await getProducts();
-  renderProducts(grid, products);
+  if (featuredGrid) renderProducts(featuredGrid, products.slice(0, FEATURED_COUNT));
+  if (fullList) renderProductList(fullList, products);
 }
 
 // ---------- 逐字浮現動畫 ----------
@@ -134,7 +142,7 @@ function initHeroSlideshow() {
 // 速度是 0~1 的相對值,數字越大位移越明顯。之後 Products / Contact 要加視差,
 // 直接在該元素上補一個 data-parallax 屬性即可,不用再寫新的滾動邏輯。
 const PARALLAX_STRENGTH = 300; // 振幅倍率：先前用 100，對 0.06~0.16 這種小 speed 值只會位移 3~8px，
-                                // 肉眼幾乎看不出來(跟 hero 的 ±150px 差太多),調到 300 讓其他區塊也感覺得到
+// 肉眼幾乎看不出來(跟 hero 的 ±150px 差太多),調到 300 讓其他區塊也感覺得到
 
 function initParallax() {
   const els = document.querySelectorAll('[data-parallax]');
@@ -171,6 +179,7 @@ function initParallax() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  await loadLayout();    // 共用 Header / Footer 先填進 DOM,並標記目前所在頁面
   initCharReveal();      // hero 標題：頁面一載入就逐字浮現
   initHeroSlideshow();   // hero 圖片：輪播 + 捲動視差
   await initProducts();  // 產品卡先插入 DOM

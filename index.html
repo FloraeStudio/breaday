@@ -15,21 +15,9 @@
   <link rel="stylesheet" href="css/main.css">
 </head>
 
-<body>
+<body data-page="home">
 
-  <header>
-    <div class="nav-inner">
-      <div class="logo">BREADAY</div>
-      <nav aria-label="主選單">
-        <ul>
-          <li><a href="#home">首頁</a></li>
-          <li><a href="#about">關於我們</a></li>
-          <li><a href="#products">所有商品</a></li>
-          <li><a href="#contact">聯絡我們</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <header id="site-header"></header>
 
   <main id="home">
     <!-- Hero -->
@@ -42,7 +30,7 @@
       <div class="hero-copy">
         <div class="hero-eyebrow">TAIWAN — SINCE 2026</div>
         <h1 class="hero-title char-reveal">每一天，<br>從一份好麵包開始。</h1>
-        <p class="hero-desc">我們「希望成為讓人每天都想吃的麵包店」。只選熊本縣產小麥與能安心食用的食材，細心做好每一份麵包。</p>
+        <p class="hero-desc">我們「希望成為讓人每天都想吃」的麵包店。只選熊本縣產小麥與能安心食用的食材，細心做好每一份麵包。</p>
       </div>
       <div class="hero-media-mark" aria-hidden="true"><span class="hero-media-mark-in">BREADAY</span></div>
     </section>
@@ -54,7 +42,7 @@
       </svg>
     </div>
 
-    <!-- About -->
+    <!-- About 摘要:完整故事(含熊本地震)在 about.html -->
     <section class="section about-section" id="about">
       <div class="about-text scroll-reveal">
         <div class="section-index" aria-hidden="true" data-parallax="0.06">
@@ -65,11 +53,9 @@
           <h2 class="about-title">用日常的心意，<br>做值得每天期待的麵包。</h2>
           <div class="about-divider" aria-hidden="true"></div>
           <div class="about-body">
-            <p>我們以「希望成為讓人每天都想吃的麵包店」為目標，用心地進行每天的麵包製作。</p>
-            <p>
-              受到熊本地震的影響，BREADAY目前暫停了實體店面的營業。過去，每天在店裡迎接大家、為大家送上剛出爐的麵包，是我們的日常。然而現在，這樣的日常按下了暫停鍵。即便如此，我們並不想「停下」，而是想用不同的形式，把麵包送到大家手中。
-            </p>
+            <p>我們以「希望成為讓人每天都想吃的麵包店」為目標，只選熊本縣產小麥與看得安心的食材，細膩地對待每一次發酵與烘焙。</p>
           </div>
+          <a href="about.html" class="btn">閱讀我們的故事 →</a>
         </div>
         <div class="about-quote" aria-hidden="true">
           <span>一份日常，一份心意。</span>
@@ -77,7 +63,7 @@
       </div>
     </section>
 
-    <!-- Products -->
+    <!-- Products 精選:完整商品在 products.html -->
     <section class="section section-alt" id="products">
       <div class="container">
         <div class="products-head scroll-reveal">
@@ -91,15 +77,15 @@
           </div>
         </div>
 
-        <div class="products-grid" id="product-grid">
-          <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
+        <div class="products-grid" id="featured-grid">
+          <!-- 由 js/main.js 透過 data-service.js 動態產生(僅前 3 件精選) -->
         </div>
 
-        <a href="#" class="btn products-more">查看所有商品 →</a>
+        <a href="products.html" class="btn products-more">查看所有商品 →</a>
       </div>
     </section>
 
-    <!-- Contact -->
+    <!-- Contact 引導:完整聯絡頁在 contact.html -->
     <section class="contact-section" id="contact">
       <div class="container">
         <div class="contact-grid scroll-reveal">
@@ -111,48 +97,14 @@
             <h2 class="about-title contact-title">想預訂，或想更了解 BREADAY?</h2>
             <div class="contact-divider" aria-hidden="true"></div>
             <p class="contact-desc">歡迎透過以下方式與我們聯繫，我們會盡快回覆你的訊息。</p>
-            <a href="#" class="btn btn-accent contact-btn">聯絡我們</a>
+            <a href="contact.html" class="btn btn-accent contact-btn">聯絡我們 →</a>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="container footer-inner">
-      <div class="footer-main">
-        <div class="footer-brand">
-          <div class="footer-logo">BREADAY</div>
-          <p class="footer-desc">希望成為讓人每天都想吃的麵包店。</p>
-        </div>
-
-        <div class="footer-links">
-          <div class="footer-col">
-            <div class="footer-col-title">EXPLORE</div>
-            <ul>
-              <li><a href="#about">關於我們</a></li>
-              <li><a href="#products">本週精選</a></li>
-              <li><a href="#contact">聯絡我們</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <div class="footer-col-title">INFO</div>
-            <ul>
-              <li>可提供批發服務</li>
-              <li>營業時間：10:00 – 18:00</li>
-              <li>公休日：星期二</li>
-              <li><a href="https://www.instagram.com/breaday2023/" target="_blank" rel="noopener">Instagram</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <span>© 2026 BREADAY Taiwan</span>
-        <span>隱私權政策 ・ 服務條款</span>
-      </div>
-    </div>
-  </footer>
+  <footer id="site-footer"></footer>
 
   <script type="module" src="js/main.js"></script>
 </body>

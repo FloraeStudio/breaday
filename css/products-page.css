@@ -1,0 +1,150 @@
+/* ---------- 所有商品頁專屬樣式 ----------
+   只有 products.html 會載入這個檔案。刻意跟首頁的不對稱 bento 格線區隔開,
+   改用「型錄式」單欄清單:一列一件商品,奇偶列縮圖左右交錯,
+   靠數字、細線、留白做節奏,不是靠格線切割做節奏。 */
+
+.product-list-page {
+    padding-top: var(--space-8);
+}
+
+.product-list-head {
+    max-width: 640px;
+    margin: 0 0 var(--space-12);
+}
+
+.product-list-kicker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display-en);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: var(--color-accent);
+    margin-bottom: 20px;
+}
+
+.product-list-kicker::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-line);
+}
+
+.product-list-title {
+    font-family: var(--font-display-zh);
+    font-weight: 500;
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+.product-list-desc {
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--color-text-soft);
+    max-width: 42ch;
+}
+
+/* ---------- 清單本體 ---------- */
+.product-list {
+    list-style: none;
+    border-top: 1px solid var(--color-line);
+}
+
+.product-row {
+    border-bottom: 1px solid var(--color-line);
+}
+
+.product-row-link {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 28px 4px;
+    transition: background-color .4s ease;
+}
+
+.product-row-link:hover {
+    background-color: rgba(171, 134, 102, 0.05);
+}
+
+.product-row-media {
+    flex-shrink: 0;
+    width: 92px;
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(150deg, #E9DCC7, #C9AD8E);
+    background-size: cover;
+    background-position: center;
+    transition: transform .6s cubic-bezier(.22, .68, 0, 1);
+}
+
+.product-row-link:hover .product-row-media {
+    transform: scale(1.08);
+}
+
+.product-row-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.product-row-name {
+    position: relative;
+    width: fit-content;
+    font-family: var(--font-display-zh);
+    font-size: 17px;
+}
+
+.product-row-name::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0;
+    height: 1px;
+    background: var(--color-accent);
+    transition: width .3s ease;
+}
+
+.product-row-link:hover .product-row-name::after {
+    width: 100%;
+}
+
+.product-row-tag {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--color-text-soft);
+}
+
+.product-row-price {
+    flex-shrink: 0;
+    font-size: 14px;
+    color: var(--color-text-soft);
+}
+
+.product-list .scroll-reveal {
+    transition-delay: calc(var(--i, 0) * .06s);
+}
+
+@media (max-width:640px) {
+    .product-row-link {
+        gap: 18px;
+        padding: 20px 2px;
+    }
+
+    .product-row-media {
+        width: 64px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-row-link {
+        transition: none;
+    }
+
+    .product-row-link:hover .product-row-media {
+        transform: none;
+    }
+}

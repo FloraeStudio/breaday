@@ -1,0 +1,92 @@
+/* ---------- 隱私權政策 / 服務條款共用樣式 ----------
+   純文字閱讀頁,不需要動畫或格線,只靠留白跟字級層級做出可讀性,
+   跟其他頁面的視覺語彙(serif 標題、細線、留白)維持一致但更收斂。 */
+
+.legal-page {
+    padding-top: var(--space-8);
+}
+
+.legal-header {
+    max-width: 640px;
+    margin: 0 0 var(--space-8);
+}
+
+.legal-kicker {
+    font-family: var(--font-display-en);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: var(--color-accent);
+    margin-bottom: 14px;
+}
+
+.legal-title {
+    font-family: var(--font-display-zh);
+    font-weight: 500;
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.7;
+    margin-bottom: 14px;
+}
+
+.legal-updated {
+    font-size: 13px;
+    color: var(--color-text-soft);
+}
+
+.legal-body {
+    max-width: 720px;
+}
+
+.legal-body section {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--color-line);
+}
+
+.legal-body section:last-child {
+    border-bottom: none;
+}
+
+.legal-body h2 {
+    font-family: var(--font-display-zh);
+    font-weight: 500;
+    font-size: 18px;
+    margin-bottom: 14px;
+}
+
+.legal-body p {
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--color-text-soft);
+    margin-bottom: 12px;
+}
+
+.legal-body p:last-child {
+    margin-bottom: 0;
+}
+
+.legal-body ul {
+    list-style: none;
+    margin-top: 8px;
+}
+
+.legal-body li {
+    position: relative;
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--color-text-soft);
+    padding-left: 18px;
+    margin-bottom: 8px;
+}
+
+.legal-body li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+}
+
+/* 日文佔位內容行距抓寬一點,之後中文化時可以拿掉這個 class */
+.legal-body[lang="ja"] p,
+.legal-body[lang="ja"] li {
+    line-height: 2;
+}

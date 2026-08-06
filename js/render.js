@@ -12,3 +12,18 @@ export function renderProducts(container, products) {
     </a>
   `).join('');
 }
+
+export function renderProductList(container, products) {
+  container.innerHTML = products.map((p, index) => `
+    <li class="product-row scroll-reveal" style="--i:${index}">
+      <a href="#" class="product-row-link" data-id="${p.id}">
+        <span class="product-row-media"${p.image ? ` style="background-image:url('${p.image}')"` : ''}></span>
+        <span class="product-row-info">
+          <span class="product-row-name">${p.name}</span>
+          ${p.tag ? `<span class="product-row-tag">${p.tag}</span>` : ''}
+        </span>
+        <span class="product-row-price">NT$ ${p.price}</span>
+      </a>
+    </li>
+  `).join('');
+}

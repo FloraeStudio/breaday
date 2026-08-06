@@ -52,6 +52,12 @@ nav a:hover::after {
   width: 100%;
 }
 
+/* 目前所在頁面:固定顯示底線(不是 hover 觸發,也不是循環動畫),
+   讓使用者在多頁站台裡隨時知道自己在哪一頁 */
+nav a.is-active::after {
+  width: 100%;
+}
+
 @media (max-width:640px) {
   nav ul {
     gap: 18px;

@@ -1,3 +1,8 @@
+/* 網站從單頁改成多頁後,這個檔案改名為 sections.css,
+   因為裡面的樣式(Hero / About / Products / Contact)現在分散在
+   index.html / about.html / products.html / contact.html 四個頁面共用,
+   不再只屬於首頁 */
+
 /* ---------- Hero ---------- */
 .hero {
     display: grid;
@@ -496,6 +501,11 @@
     margin-bottom: 0;
 }
 
+/* 首頁 About 摘要底下的「閱讀我們的故事」連結,跟本文之間留一點呼吸空間 */
+.about-text-body>.btn {
+    margin-top: 24px;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .about-body p {
         opacity: 1;
@@ -902,4 +912,26 @@
         transform: none;
         transition: letter-spacing .35s ease, border-color .35s ease, color .35s ease, outline-color .35s ease, outline-offset .35s ease;
     }
+}
+
+/* ---------- 獨立頁面共用表頭(breadcrumb + kicker) ----------
+   給 about.html / contact.html 這類「被連結點進來」的獨立頁面用,
+   跟首頁單頁滾動專用的 .section-index(01/ABOUT 直排索引)區隔開 */
+.page-kicker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display-en);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: var(--color-accent);
+    margin: 4px 0 var(--space-6);
+}
+
+.page-kicker::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-line);
 }
