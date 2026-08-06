@@ -13,6 +13,7 @@
     rel="stylesheet">
 
   <link rel="stylesheet" href="css/main.css">
+  <script type="module" src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.21/dist/dotlottie-wc.js"></script>
 </head>
 
 <body>
@@ -38,32 +39,40 @@
         <img class="hero-slide is-active" src="assets/images/hero/hero-01.webp" alt="">
         <img class="hero-slide" src="assets/images/hero/hero-02.webp" alt="">
         <img class="hero-slide" src="assets/images/hero/hero-03.webp" alt="">
-        <div class="hero-media-mark" aria-hidden="true">BREADAY</div>
-        <div class="hero-media-caption">熊本 → 台灣</div>
       </div>
       <div class="hero-copy">
         <div class="hero-eyebrow">TAIWAN — SINCE 2026</div>
         <h1 class="hero-title char-reveal">每一天,<br>從一份麵包開始。</h1>
-        <p class="hero-desc">嚴選在地小麥與天然酵母,每日手作出爐。將日本熊本的烘焙精神,帶進台灣的日常餐桌。</p>
+        <p class="hero-desc">我們想成為「讓人每天都想吃」的麵包店。只選熊本小麥與看得安心的食材,細心做好每一份麵包。</p>
       </div>
+      <div class="hero-media-mark" aria-hidden="true"><span class="hero-media-mark-in">BREADAY</span></div>
     </section>
 
-    <div class="cut-divider" aria-hidden="true">
+    <div class="cut-divider line-draw" aria-hidden="true">
       <svg viewBox="0 0 120 14">
-        <path d="M0 7 Q10 1 20 7 T40 7 T60 7 T80 7 T100 7 T120 7" fill="none" stroke="#AB8666" stroke-width="1.2" />
+        <path d="M0 7 Q10 1 20 7 T40 7 T60 7 T80 7 T100 7 T120 7" fill="none" stroke="#AB8666" stroke-width="1.2"
+          pathLength="1" />
       </svg>
     </div>
 
     <!-- About -->
-    <section class="section" id="about">
-      <div class="container about">
-        <div class="about-media scroll-reveal" role="img" aria-label="烘焙職人製作麵包的照片(佔位)"></div>
-        <div class="scroll-reveal">
-          <div class="section-label">ABOUT BREADAY</div>
+    <section class="section about-section" id="about">
+      <div class="about-text scroll-reveal">
+        <div class="section-index" aria-hidden="true" data-parallax="0.06">
+          <span>01</span>
+          <span>ABOUT</span>
+        </div>
+        <div class="about-text-body">
           <h2 class="about-title">用日常的心意,<br>做值得每天期待的麵包。</h2>
-          <div class="about-body" style="margin-top:24px;">
-            <p>BREADAY 起源於日本熊本,秉持「想讓人每天都想吃」的信念,堅持選用當地小麥與天然食材,細膩對待每一次發酵與烘烤。</p>
-            <p>來到台灣,我們保留這份對食材的堅持,並依循在地的飲食習慣調整配方,希望成為你日常裡,一份安心又期待的存在。</p>
+          <div class="about-divider" aria-hidden="true"></div>
+          <div class="about-body">
+            <p>BREADAY 起源於日本熊本,我們始終相信,好的麵包該是「讓人每天都想吃」的存在,堅持選用熊本在地小麥,只用看得安心的食材,細膩地對待每一次發酵與烘烤。熊本地震曾讓我們暫停了迎接客人、暫停了每天出爐的日常,但我們沒有停下做麵包這件事——只是換一種方式,把這份心意繼續送到你手上。</p>
+            <p>來到台灣,我們把這份堅持原封不動地留著,也依循在地飲食習慣調整配方,盼望成為你日常裡,一份安心又期待的存在。</p>
+          </div>
+        </div>
+        <div class="about-visual" aria-hidden="true">
+          <div class="about-visual-inner" data-parallax="0.14">
+            <dotlottie-wc src="assets/images/about/Bread%20guy.lottie?v=2" autoplay loop speed="0.85"></dotlottie-wc>
           </div>
         </div>
       </div>
@@ -73,25 +82,35 @@
     <section class="section section-alt" id="products">
       <div class="container">
         <div class="products-head scroll-reveal">
-          <div>
-            <div class="section-label">PRODUCT LIST</div>
-            <h2 class="products-title">本週精選</h2>
+          <div class="section-index" aria-hidden="true" data-parallax="0.06">
+            <span>02</span>
+            <span>PRODUCT LIST</span>
           </div>
-          <a href="#" class="btn">查看所有商品 →</a>
+          <h2 class="products-title">本週精選</h2>
         </div>
 
         <div class="products-grid" id="product-grid">
           <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
         </div>
+
+        <a href="#" class="btn products-more">查看所有商品 →</a>
       </div>
     </section>
 
     <!-- Contact -->
     <section class="contact-section" id="contact">
-      <div class="container scroll-reveal">
-        <div class="section-label contact-label">GET IN TOUCH</div>
-        <h2 class="about-title contact-title">想預訂,或想更了解 BREADAY?</h2>
-        <a href="#" class="btn btn-accent contact-btn">聯絡我們</a>
+      <div class="container">
+        <div class="contact-grid scroll-reveal">
+          <div class="section-index" aria-hidden="true" data-parallax="0.06">
+            <span>03</span>
+            <span>CONTACT</span>
+          </div>
+          <div class="contact-body">
+            <h2 class="about-title contact-title">想預訂,或想更了解 BREADAY?</h2>
+            <p class="contact-desc">歡迎透過以下方式與我們聯繫,我們會盡快回覆你的訊息。</p>
+            <a href="#" class="btn btn-accent contact-btn">聯絡我們</a>
+          </div>
+        </div>
       </div>
     </section>
   </main>

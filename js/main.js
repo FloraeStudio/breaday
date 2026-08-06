@@ -39,6 +39,9 @@ function initCharReveal() {
 }
 
 // ---------- 滾動淡入 ----------
+// rootMargin 給下緣一個「正值」,等於把偵測範圍往下延伸超出實際畫面,
+// 元素還沒真的滑進視窗、離可視範圍還有一小段距離時就先觸發動畫,
+// 這樣使用者滑到看見它的當下,動畫多半已經跑完,不會有「動畫追不上滑動速度」的落差感
 function initScrollReveal() {
   const targets = document.querySelectorAll('.scroll-reveal:not(.is-visible)');
   if (!targets.length) return;
@@ -57,32 +60,45 @@ function initScrollReveal() {
         }
       });
     },
-    { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    { threshold: 0, rootMargin: '0px 0px 20% 0px' }
   );
   targets.forEach((el) => observer.observe(el));
 }
 
 // ---------- Hero 輪播(淡入淡出) + 捲動視差(帶阻尼緩動，避免卡頓) ----------
 const HERO_INTERVAL = 4500;        // 每張停留時間(ms)
-const HERO_SCROLL_PARALLAX = 26;   // 捲動視差最大位移(px)
+const HERO_SCROLL_PARALLAX = 150;   // 圖片捲動視差最大位移(px)
+const HERO_COPY_RATIO = -1.1;      // 文字視差幅度，比圖片更大且方向相反，往上滑感覺文字往前衝
+const HERO_MARK_RATIO = -1.1;     // BREADAY 浮水印視差幅度，同樣反方向，貼著文字一起往上
 const HERO_SCALE = 1.06;           // 圖片要比容器大一點，位移才不會露邊
 const HERO_EASE = 0.08;            // 阻尼係數(0~1)：越小越滑順、跟手感越輕；越大越貼近即時捲動位置
 
 function initHeroSlideshow() {
   const wrap = document.getElementById('hero-media');
+  const heroSection = document.querySelector('.hero');
+  const heroCopy = document.querySelector('.hero-copy');
+  const heroMark = document.querySelector('.hero-media-mark');
   if (!wrap) return;
   const slides = wrap.querySelectorAll('.hero-slide');
   if (!slides.length) return;
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let targetShift = 0;   // 依捲動位置算出的「目標」位移
-  let currentShift = 0;  // 實際套用到畫面上的位移，每一幀慢慢逼近 targetShift
+  let targetShift = 0;
+  let currentShift = 0;
 
   const applyTransform = () => {
     slides.forEach((slide) => {
       slide.style.transform = `scale(${HERO_SCALE}) translateY(${currentShift}px)`;
     });
+    if (heroCopy) {
+      heroCopy.style.transform = `translateY(${currentShift * HERO_COPY_RATIO}px)`;
+    }
+    if (heroMark) {
+      heroMark.style.transform = `translateY(${currentShift * HERO_MARK_RATIO}px)`;
+      const fade = 1 - Math.min(1, Math.abs(currentShift) / (HERO_SCROLL_PARALLAX * 0.85));
+      heroMark.style.opacity = fade;
+    }
   };
   applyTransform();
 
@@ -95,17 +111,57 @@ function initHeroSlideshow() {
     slides[current].classList.add('is-active');
   }, HERO_INTERVAL);
 
+  // rect 的讀取直接放進 rAF 迴圈，不掛在 scroll 事件上。
+  // 這樣讀取頻率會跟螢幕更新率同步(通常 60~120Hz)，
+  // 不會被瀏覽器的 scroll 事件節流或過量觸發影響，滾動時比較不會頓。
   const updateTarget = () => {
-    const rect = wrap.getBoundingClientRect();
+    const rect = (heroSection || wrap).getBoundingClientRect();
     if (rect.bottom < 0 || rect.top > window.innerHeight) return;
     const progress = rect.top / window.innerHeight;
     targetShift = progress * -HERO_SCROLL_PARALLAX;
   };
-  window.addEventListener('scroll', updateTarget, { passive: true });
 
   const loop = () => {
+    updateTarget();
     currentShift += (targetShift - currentShift) * HERO_EASE;
     applyTransform();
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+
+// ---------- 通用捲動視差:給任何帶 data-parallax="速度" 的元素用 ----------
+// 速度是 0~1 的相對值,數字越大位移越明顯。之後 Products / Contact 要加視差,
+// 直接在該元素上補一個 data-parallax 屬性即可,不用再寫新的滾動邏輯。
+function initParallax() {
+  const els = document.querySelectorAll('[data-parallax]');
+  if (!els.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const items = Array.from(els).map((el) => ({
+    el,
+    speed: parseFloat(el.dataset.parallax) || 0.1,
+    scale: el.dataset.parallaxScale ? parseFloat(el.dataset.parallaxScale) : null,
+    current: 0,
+    target: 0,
+  }));
+
+  const update = () => {
+    items.forEach((item) => {
+      const rect = item.el.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+      const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
+      item.target = (centerOffset / window.innerHeight) * -100 * item.speed;
+    });
+  };
+
+  const loop = () => {
+    update();
+    items.forEach((item) => {
+      item.current += (item.target - item.current) * 0.08;
+      const scalePart = item.scale ? ` scale(${item.scale})` : '';
+      item.el.style.transform = `translateY(${item.current}px)${scalePart}`;
+    });
     requestAnimationFrame(loop);
   };
   requestAnimationFrame(loop);
@@ -116,4 +172,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   initHeroSlideshow();   // hero 圖片：輪播 + 捲動視差
   await initProducts();  // 產品卡先插入 DOM
   initScrollReveal();    // 再統一掛上滾動淡入觀察者(含剛插入的產品卡)
+  initParallax();        // About 圖片、精選商品第一張圖的輕微視差
 });
