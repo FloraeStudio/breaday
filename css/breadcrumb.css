@@ -1,0 +1,19 @@
+/* 首頁沒有上一層可回,不會出現這個元件,
+   從「所有商品」「商品詳情」「購物車」開始使用 */
+.breadcrumb{ padding: 20px 0; }
+
+.breadcrumb ol{
+  list-style:none;
+  display:flex; flex-wrap:wrap; align-items:center;
+  gap:8px;
+  font-size:13px;
+  color: var(--color-text-soft);
+}
+.breadcrumb li{ display:flex; align-items:center; gap:8px; }
+.breadcrumb li:not(:last-child)::after{
+  content:'/';
+  color: var(--color-line);
+}
+.breadcrumb a{ color: var(--color-text-soft); transition: color .2s ease; }
+.breadcrumb a:hover{ color: var(--color-accent); }
+.breadcrumb li:last-child{ color: var(--color-text); }

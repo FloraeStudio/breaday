@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BREADAY 台灣 | 每日,從一份麵包開始</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Noto+Serif+TC:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="logo">BREADAY</div>
+    <nav aria-label="主選單">
+      <ul>
+        <li><a href="#home">首頁</a></li>
+        <li><a href="#about">關於我們</a></li>
+        <li><a href="#products">所有商品</a></li>
+        <li><a href="#contact">聯絡我們</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="home">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-media" id="hero-media" role="img" aria-label="剛出爐的麵包特寫照片">
+      <img class="hero-slide is-active" src="assets/images/hero/hero-01.webp" alt="">
+      <img class="hero-slide" src="assets/images/hero/hero-02.webp" alt="">
+      <img class="hero-slide" src="assets/images/hero/hero-03.webp" alt="">
+      <div class="hero-media-caption">熊本 → 台灣</div>
+    </div>
+    <div class="hero-copy">
+      <div class="hero-eyebrow">TAIWAN — SINCE 2026</div>
+      <h1 class="hero-title char-reveal">每一天,<br>從一份麵包開始。</h1>
+      <p class="hero-desc">嚴選在地小麥與天然酵母,每日手作出爐。將日本熊本的烘焙精神,帶進台灣的日常餐桌。</p>
+      <a href="#products" class="btn btn-accent">看看今天的麵包 →</a>
+    </div>
+  </section>
+
+  <div class="cut-divider" aria-hidden="true">
+    <svg viewBox="0 0 120 14"><path d="M0 7 Q10 1 20 7 T40 7 T60 7 T80 7 T100 7 T120 7" fill="none" stroke="#AB8666" stroke-width="1.2"/></svg>
+  </div>
+
+  <!-- About -->
+  <section class="section" id="about">
+    <div class="container about">
+      <div class="about-media scroll-reveal" role="img" aria-label="烘焙職人製作麵包的照片(佔位)"></div>
+      <div class="scroll-reveal">
+        <div class="section-label">ABOUT BREADAY</div>
+        <h2 class="about-title">用日常的心意,<br>做值得每天期待的麵包。</h2>
+        <div class="about-body" style="margin-top:24px;">
+          <p>BREADAY 起源於日本熊本,秉持「想讓人每天都想吃」的信念,堅持選用當地小麥與天然食材,細膩對待每一次發酵與烘烤。</p>
+          <p>來到台灣,我們保留這份對食材的堅持,並依循在地的飲食習慣調整配方,希望成為你日常裡,一份安心又期待的存在。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section class="section section-alt" id="products">
+    <div class="container">
+      <div class="products-head scroll-reveal">
+        <div>
+          <div class="section-label">PRODUCT LIST</div>
+          <h2 class="products-title">本週精選</h2>
+        </div>
+        <a href="#" class="btn">查看所有商品 →</a>
+      </div>
+
+      <div class="products-grid" id="product-grid">
+        <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact-section" id="contact">
+    <div class="container scroll-reveal">
+      <div class="section-label contact-label">GET IN TOUCH</div>
+      <h2 class="about-title contact-title">想預訂,或想更了解 BREADAY?</h2>
+      <a href="#" class="btn btn-accent contact-btn">聯絡我們</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">BREADAY</div>
+        <p class="footer-desc">來自日本熊本的麵包品牌,現在台灣。每一天,從一份麵包開始。</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">EXPLORE</div>
+        <ul>
+          <li><a href="#about">關於我們</a></li>
+          <li><a href="#products">所有商品</a></li>
+          <li><a href="#contact">聯絡我們</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">INFO</div>
+        <ul>
+          <li>營業時間:待補</li>
+          <li>客服信箱:待補</li>
+          <li>社群連結:待補</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 BREADAY Taiwan</span>
+      <span>隱私權政策 ・ 服務條款</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

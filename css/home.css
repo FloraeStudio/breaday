@@ -1,0 +1,267 @@
+/* ---------- Hero ---------- */
+.hero {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    min-height: 86vh;
+    align-items: stretch;
+}
+
+@media (max-width:860px) {
+    .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+}
+
+.hero-media {
+    background: linear-gradient(180deg, #E4D6C3 0%, #C9AD8E 100%);
+    position: relative;
+    min-height: 420px;
+    overflow: hidden;
+}
+
+.hero-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.08);
+    transition: opacity 1.2s ease;
+    will-change: transform, opacity;
+}
+
+.hero-slide.is-active {
+    opacity: 1;
+}
+
+.hero-media-caption {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: #fff;
+    writing-mode: vertical-rl;
+    opacity: 0.85;
+}
+
+.hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 64px 56px;
+    background: var(--color-bg);
+}
+
+@media (max-width:860px) {
+    .hero-copy {
+        padding: 48px 32px;
+    }
+}
+
+.hero-eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    color: var(--color-accent);
+    margin-bottom: 20px;
+}
+
+.hero-title {
+    font-family: var(--font-display-zh);
+    font-weight: 500;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    margin-bottom: 24px;
+}
+
+.hero-desc {
+    font-size: 15px;
+    color: var(--color-text-soft);
+    max-width: 34ch;
+    margin-bottom: 36px;
+}
+
+/* ---------- 逐字浮現(由 main.js 的 splitIntoChars 產生 .char span) ---------- */
+.char-reveal .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.5em);
+    animation: charRise .6s cubic-bezier(.22, .68, 0, 1) forwards;
+}
+
+@keyframes charRise {
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ---------- 滾動淡入(由 main.js 的 IntersectionObserver 加上 .is-visible) ---------- */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .8s ease, transform .8s cubic-bezier(.22, .68, 0, 1);
+}
+
+.scroll-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .char-reveal .char,
+    .scroll-reveal {
+        opacity: 1;
+        transform: none;
+        animation: none;
+        transition: none;
+    }
+}
+
+.cut-divider {
+    width: 100%;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cut-divider svg {
+    width: 120px;
+    height: 14px;
+    opacity: 0.6;
+}
+
+/* ---------- About ---------- */
+.about {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 64px;
+    align-items: center;
+}
+
+@media (max-width:860px) {
+    .about {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
+
+.about-title {
+    font-family: var(--font-display-zh);
+    font-weight: 500;
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.7;
+}
+
+.about-body p {
+    font-size: 14.5px;
+    color: var(--color-text-soft);
+    margin-bottom: 16px;
+}
+
+.about-body p:last-child {
+    margin-bottom: 0;
+}
+
+.about-media {
+    aspect-ratio: 4/5;
+    background: linear-gradient(160deg, #EFE3D2, #D8C1A4);
+}
+
+/* ---------- Products ---------- */
+.products-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.products-title {
+    font-family: var(--font-display-zh);
+    font-weight: 500;
+    font-size: clamp(22px, 3vw, 28px);
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px 32px;
+}
+
+@media (max-width:860px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 20px;
+    }
+}
+
+@media (max-width:520px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.product-card {
+    display: block;
+}
+
+.products-grid .scroll-reveal:nth-child(1) { transition-delay: 0s; }
+.products-grid .scroll-reveal:nth-child(2) { transition-delay: .08s; }
+.products-grid .scroll-reveal:nth-child(3) { transition-delay: .16s; }
+.products-grid .scroll-reveal:nth-child(4) { transition-delay: .24s; }
+.products-grid .scroll-reveal:nth-child(5) { transition-delay: .32s; }
+.products-grid .scroll-reveal:nth-child(6) { transition-delay: .4s; }
+
+.product-media {
+    aspect-ratio: 1/1;
+    background: linear-gradient(150deg, #E9DCC7, #C9AD8E);
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    background: var(--color-bg);
+    color: var(--color-text);
+    padding: 5px 10px;
+}
+
+.product-name {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.product-price {
+    font-size: 13px;
+    color: var(--color-text-soft);
+}
+
+/* ---------- Contact ---------- */
+.contact-section {
+    padding: 72px 0;
+    text-align: center;
+}
+
+.contact-label {
+    justify-content: center;
+    display: flex;
+}
+
+.contact-title {
+    margin-bottom: 24px;
+}
+
+.contact-btn {
+    margin: 0 auto;
+}

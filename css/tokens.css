@@ -1,0 +1,25 @@
+/* 色彩、字體、間距 */
+:root {
+  --color-bg: #F6F2EA;
+  --color-bg-alt: #EFE8DA;
+  --color-text: #252525;
+  --color-text-soft: #6B6259;
+  --color-accent: #AB8666;
+  --color-accent-soft: #D7A88F;
+  --color-line: #DBD0BE;
+  --color-white: #FFFFFF;
+
+  --font-display-en: 'Fraunces', serif;
+  --font-display-zh: 'Noto Serif TC', serif;
+  --font-body: 'Noto Sans TC', sans-serif;
+
+  --container-w: 1120px;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-12: 96px;
+}
