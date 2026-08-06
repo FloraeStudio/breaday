@@ -62,11 +62,11 @@ function initScrollReveal() {
   targets.forEach((el) => observer.observe(el));
 }
 
-// ---------- Hero 輪播(淡入淡出) + 滑鼠視差 + 捲動視差 ----------
+// ---------- Hero 輪播(淡入淡出) + 捲動視差(帶阻尼緩動，避免卡頓) ----------
 const HERO_INTERVAL = 4500;        // 每張停留時間(ms)
-const HERO_MOUSE_PARALLAX = 14;    // 滑鼠視差最大位移(px)
 const HERO_SCROLL_PARALLAX = 26;   // 捲動視差最大位移(px)
-const HERO_SCALE = 1.08;           // 兩種位移疊加，圖片要比容器大更多才不會露邊
+const HERO_SCALE = 1.06;           // 圖片要比容器大一點，位移才不會露邊
+const HERO_EASE = 0.08;            // 阻尼係數(0~1)：越小越滑順、跟手感越輕；越大越貼近即時捲動位置
 
 function initHeroSlideshow() {
   const wrap = document.getElementById('hero-media');
@@ -75,28 +75,19 @@ function initHeroSlideshow() {
   if (!slides.length) return;
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // 只有滑鼠裝置才做滑鼠視差；觸控裝置(手機/平板)天生不會觸發 mousemove，這裡再明確判斷一次避免誤加監聽
-  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  let mouseX = 0, mouseY = 0, scrollShift = 0;
-  let ticking = false;
+  let targetShift = 0;   // 依捲動位置算出的「目標」位移
+  let currentShift = 0;  // 實際套用到畫面上的位移，每一幀慢慢逼近 targetShift
 
-  const render = () => {
+  const applyTransform = () => {
     slides.forEach((slide) => {
-      slide.style.transform = `scale(${HERO_SCALE}) translate(${mouseX}px, ${mouseY + scrollShift}px)`;
+      slide.style.transform = `scale(${HERO_SCALE}) translateY(${currentShift}px)`;
     });
-    ticking = false;
   };
-  const requestRender = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(render);
-  };
-  requestRender(); // 套用初始 scale，避免第一次互動前後跳一下
+  applyTransform();
 
-  if (reduceMotion) return; // 保留第一張靜態顯示，不做輪播/視差
+  if (reduceMotion) return;
 
-  // 自動輪播淡入淡出
   let current = 0;
   setInterval(() => {
     slides[current].classList.remove('is-active');
@@ -104,34 +95,25 @@ function initHeroSlideshow() {
     slides[current].classList.add('is-active');
   }, HERO_INTERVAL);
 
-  // 滑鼠視差：游標往哪，圖片反方向微微飄
-  if (canHover) {
-    wrap.addEventListener('mousemove', (e) => {
-      const rect = wrap.getBoundingClientRect();
-      mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * HERO_MOUSE_PARALLAX;
-      mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * HERO_MOUSE_PARALLAX;
-      requestRender();
-    });
-    wrap.addEventListener('mouseleave', () => {
-      mouseX = 0;
-      mouseY = 0;
-      requestRender();
-    });
-  }
-
-  // 捲動視差：只在 hero 還在視窗附近時計算，其餘時間略過(效能考量)
-  window.addEventListener('scroll', () => {
+  const updateTarget = () => {
     const rect = wrap.getBoundingClientRect();
     if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-    const progress = rect.top / window.innerHeight; // hero 頂端在視窗中的相對位置：約 1 → 0 → -1
-    scrollShift = progress * -HERO_SCROLL_PARALLAX;
-    requestRender();
-  }, { passive: true });
+    const progress = rect.top / window.innerHeight;
+    targetShift = progress * -HERO_SCROLL_PARALLAX;
+  };
+  window.addEventListener('scroll', updateTarget, { passive: true });
+
+  const loop = () => {
+    currentShift += (targetShift - currentShift) * HERO_EASE;
+    applyTransform();
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
   initCharReveal();      // hero 標題：頁面一載入就逐字浮現
-  initHeroSlideshow();   // hero 圖片：輪播 + 滑鼠視差 + 捲動視差
+  initHeroSlideshow();   // hero 圖片：輪播 + 捲動視差
   await initProducts();  // 產品卡先插入 DOM
   initScrollReveal();    // 再統一掛上滾動淡入觀察者(含剛插入的產品卡)
 });
