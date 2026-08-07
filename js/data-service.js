@@ -2,9 +2,7 @@
 //   回傳格式必須維持 { id, tag, name, price, image }，
 //   render.js / main.js 不需要跟著改。
 
-const SHOPIFY_DOMAIN = 'breaday-demo-py3t6qjq.myshopify.com'; // 依照 https://admin.shopify.com/store/網域名稱/.... 修改
-const STOREFRONT_TOKEN = '017980e1bb991f36ca80d29c0b744477';
-const API_VERSION = '2026-04'; // 依 Shopify 目前公告的最新穩定版號調整
+import { SHOPIFY_DOMAIN, STOREFRONT_TOKEN, API_VERSION } from './shopify-config.js';
 
 const QUERY = `
   query getProducts {
