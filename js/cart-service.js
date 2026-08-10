@@ -52,12 +52,21 @@ async function shopifyFetch(query, variables = {}) {
   return json.data;
 }
 
+// 強制結帳頁使用繁體中文，不依賴訪客瀏覽器語言設定或 Shopify 的地區自動偵測
+// （後台 Markets 目前沒有「強制預設語言」選項，這裡直接在網址層解決最穩定）
+function withForcedLocale(checkoutUrl) {
+  if (!checkoutUrl) return checkoutUrl;
+  const url = new URL(checkoutUrl);
+  url.searchParams.set('locale', 'zh-TW');
+  return url.toString();
+}
+
 // 把 API 回傳的 cart 物件轉成前端好用的簡化格式
 function formatCart(cart) {
   if (!cart) return null;
   return {
     id: cart.id,
-    checkoutUrl: cart.checkoutUrl,
+    checkoutUrl: withForcedLocale(cart.checkoutUrl),
     subtotal: cart.cost.subtotalAmount.amount,
     total: cart.cost.totalAmount.amount,
     currency: cart.cost.totalAmount.currencyCode,
