@@ -16,6 +16,12 @@ const CATEGORY_FILTERS = {
   coffee: (category) => /coffee|咖啡/i.test(category),
 };
 
+const CATEGORY_META = {
+  all: { title: '所有商品', desc: '當日現做，用心，讓吃也安心。' },
+  bread: { title: '麵包', desc: '嚴選熊本小麥與看得安心的食材，每日現烤出爐。' },
+  coffee: { title: '咖啡', desc: '搭配麵包一起享用，簡單沖煮、剛剛好的溫度。' },
+};
+
 async function initProducts() {
   const featuredGrid = document.getElementById('featured-grid');
   const fullList = document.getElementById('product-list');
@@ -33,6 +39,9 @@ async function initProducts() {
 
   const emptyState = document.getElementById('product-list-empty');
   const tabs = document.querySelectorAll('.menu-tab');
+  const listTitle = document.querySelector('.product-list-title');
+  const listDesc = document.querySelector('.product-list-desc');
+  const breadcrumbCurrent = document.querySelector('.breadcrumb ol li:last-child');
 
   if (!products.length) {
     fullList.hidden = true;
@@ -49,7 +58,13 @@ async function initProducts() {
     renderProductList(fullList, filtered);
     fullList.hidden = filtered.length === 0;
     if (emptyState) emptyState.hidden = filtered.length !== 0;
-    initScrollReveal(); // 重新掛觀察者,讓切換分類後新插入的項目也會淡入
+
+    const meta = CATEGORY_META[filterKey] || CATEGORY_META.all;
+    if (listTitle) listTitle.textContent = meta.title;
+    if (listDesc) listDesc.textContent = meta.desc;
+    if (breadcrumbCurrent) breadcrumbCurrent.textContent = meta.title;
+
+    initScrollReveal();
   };
 
   renderFiltered('all');
