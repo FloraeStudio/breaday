@@ -8,14 +8,34 @@ import { addToCart } from './cart-service.js';
 // #featured-grid:首頁(index.html)的精選預覽,只取前 3 件
 const FEATURED_COUNT = 3;
 
+// 目前只有兩種分類:麵包(預設分類,後台沒填 Product type 的商品都算這裡)、咖啡。
+// 之後要加第三種分類,在這裡多加一組 config、products.html 多加一個 <ul id="product-list-xxx">
+// 區塊即可,不用動渲染邏輯。
+const MENU_CATEGORIES = [
+  { listId: 'product-list-bread', sectionId: 'menu-category-bread', match: (category) => !/coffee|咖啡/i.test(category) },
+  { listId: 'product-list-coffee', sectionId: 'menu-category-coffee', match: (category) => /coffee|咖啡/i.test(category) },
+];
+
 async function initProducts() {
   const featuredGrid = document.getElementById('featured-grid');
-  const fullList = document.getElementById('product-list');
-  if (!featuredGrid && !fullList) return;
+  const fullList = document.getElementById('product-list'); // 舊版單一清單(若頁面還在用)
+  const hasMenuCategories = MENU_CATEGORIES.some((c) => document.getElementById(c.listId));
+  if (!featuredGrid && !fullList && !hasMenuCategories) return;
 
   const products = await getProducts();
   if (featuredGrid) renderProducts(featuredGrid, products.slice(0, FEATURED_COUNT));
   if (fullList) renderProductList(fullList, products);
+
+  // 商品列表頁(products.html):按 Product type 分成「麵包 / 咖啡」兩個菜單式區塊，
+  // 沒有商品的分類直接隱藏整個區塊，不留空標題
+  MENU_CATEGORIES.forEach(({ listId, sectionId, match }) => {
+    const listEl = document.getElementById(listId);
+    if (!listEl) return;
+    const filtered = products.filter((p) => match(p.category || ''));
+    renderProductList(listEl, filtered);
+    const sectionEl = document.getElementById(sectionId);
+    if (sectionEl) sectionEl.hidden = filtered.length === 0;
+  });
 }
 
 // ---------- 商品詳情頁(product.html) ----------

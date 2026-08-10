@@ -26,21 +26,44 @@
                 <nav class="breadcrumb" aria-label="breadcrumb">
                     <ol>
                         <li><a href="index.html">首頁</a></li>
-                        <li>所有商品</li>
+                        <li>PRODUCT LIST</li>
                     </ol>
                 </nav>
 
                 <div class="product-list-head scroll-reveal">
                     <div class="page-kicker">
-                        <span>PRODUCT LIST</span>
+                        <span>商品列表</span>
                     </div>
                     <h1 class="product-list-title">所有商品</h1>
                     <p class="product-list-desc">當日現做，用心，讓吃也安心。</p>
                 </div>
 
-                <ul class="product-list" id="product-list">
-                    <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
-                </ul>
+                <nav class="menu-categories scroll-reveal" aria-label="商品分類">
+                    <a href="#menu-category-bread">麵包</a>
+                    <a href="#menu-category-coffee">咖啡</a>
+                </nav>
+
+                <section class="menu-category" id="menu-category-bread">
+                    <div class="menu-category-head scroll-reveal">
+                        <h2 class="menu-category-title">麵包</h2>
+                        <span class="menu-category-en">BREAD</span>
+                        <div class="menu-category-divider" aria-hidden="true"></div>
+                    </div>
+                    <ul class="product-list" id="product-list-bread">
+                        <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
+                    </ul>
+                </section>
+
+                <section class="menu-category" id="menu-category-coffee">
+                    <div class="menu-category-head scroll-reveal">
+                        <h2 class="menu-category-title">咖啡</h2>
+                        <span class="menu-category-en">COFFEE</span>
+                        <div class="menu-category-divider" aria-hidden="true"></div>
+                    </div>
+                    <ul class="product-list" id="product-list-coffee">
+                        <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
+                    </ul>
+                </section>
             </div>
         </section>
     </main>

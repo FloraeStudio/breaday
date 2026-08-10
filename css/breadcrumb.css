@@ -4,16 +4,26 @@
 
 .breadcrumb ol{
   list-style:none;
-  display:flex; flex-wrap:wrap; align-items:center;
+  display:flex; flex-wrap:nowrap; align-items:center;
   gap:8px;
   font-size:13px;
   color: var(--color-text-soft);
 }
-.breadcrumb li{ display:flex; align-items:center; gap:8px; }
+/* 前面幾層(首頁/所有商品)長度固定、不縮水,避免整條被擠壓變形 */
+.breadcrumb li{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
 .breadcrumb li:not(:last-child)::after{
   content:'/';
   color: var(--color-line);
 }
 .breadcrumb a{ color: var(--color-text-soft); transition: color .2s ease; }
 .breadcrumb a:hover{ color: var(--color-accent); }
-.breadcrumb li:last-child{ color: var(--color-text); }
+/* 目前所在頁(通常是商品名稱)才是長度不固定的那個,
+   遇到太長的名稱就縮起來、用刪節號收尾,不會撐開整排導致換行歪掉 */
+.breadcrumb li:last-child{
+  color: var(--color-text);
+  flex-shrink:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}

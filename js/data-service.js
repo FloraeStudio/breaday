@@ -13,6 +13,7 @@ const QUERY = `
           handle
           title
           tags
+          productType
           priceRange { minVariantPrice { amount } }
           featuredImage { url }
         }
@@ -34,10 +35,13 @@ export async function getProducts() {
   const { data } = await res.json();
 
   // 轉換成 render.js 原本吃的格式，維持介面不變
+  // category 來自 Shopify 後台商品的「Product type」欄位(不是 tags),
+  // 之後要加新分類(例如「禮盒」),後台商品填對 Product type 就會自動歸類，前端不用再改。
   return data.products.edges.map(({ node }) => ({
     id: node.id,
     handle: node.handle,
     tag: node.tags?.[0] ?? '',
+    category: node.productType || '麵包',
     name: node.title,
     price: node.priceRange.minVariantPrice.amount,
     image: node.featuredImage?.url ?? '',

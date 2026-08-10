@@ -65,7 +65,7 @@ export function renderProductDetail(container, product) {
     <div class="product-detail-grid">
       <div class="product-gallery scroll-reveal">
         <div class="product-gallery-main">
-          <div class="product-gallery-mark" aria-hidden="true">${product.tag || 'BREAD'}</div>
+          <div class="product-gallery-mark" aria-hidden="true">BREADAY</div>
           ${mainImage
             ? `<img class="product-gallery-img" id="pd-main-img" src="${mainImage.url}" alt="${mainImage.alt}">`
             : `<div class="product-gallery-img product-gallery-img-placeholder" id="pd-main-img"></div>`}
