@@ -52,6 +52,12 @@
     border-bottom: 1px solid var(--color-line);
 }
 
+.cart-row.is-updating {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity .2s ease;
+}
+
 .cart-row-media {
     flex-shrink: 0;
     width: 76px;

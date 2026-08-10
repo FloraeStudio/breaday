@@ -253,70 +253,66 @@ async function initCartPage() {
   const cartBody = document.getElementById('cart-body');
   if (!cartBody) return;
 
-  const renderCurrentCart = async () => {
-    let cart;
-    try {
-      cart = await getOrCreateCart();
-    } catch (err) {
-      console.error('讀取購物車失敗:', err);
-      cartBody.innerHTML = `<p class="cart-empty-text">購物車讀取失敗，請重新整理再試一次。</p>`;
-      return;
-    }
-
+  function renderCurrentCart(cart) {
     if (!cart.lines.length) {
       renderCartEmpty(cartBody);
       renderCartCount(cart);
       return;
     }
-
     renderCart(cartBody, cart);
     renderCartCount(cart);
     initScrollReveal();
     bindCartRowEvents();
-  };
+  }
+
+  // 統一處理「改數量/刪除」的更新流程:先在該列標記 is-updating(立即視覺回饋),
+  // updateCartLine/removeFromCart 本身就會回傳更新後的購物車,直接拿來重繪，
+  // 不用再另外呼叫 getOrCreateCart() 多打一次 API
+  async function applyLineUpdate(lineId, updateFn) {
+    const row = cartBody.querySelector(`.cart-row[data-line-id="${lineId}"]`);
+    if (row) row.classList.add('is-updating');
+    try {
+      const cart = await updateFn();
+      renderCurrentCart(cart);
+    } catch (err) {
+      console.error('更新購物車失敗:', err);
+      if (row) row.classList.remove('is-updating');
+    }
+  }
 
   function bindCartRowEvents() {
     cartBody.querySelectorAll('.qty-btn').forEach((btn) => {
-      btn.addEventListener('click', async () => {
+      btn.addEventListener('click', () => {
         const { lineId, action } = btn.dataset;
         const input = cartBody.querySelector(`.cart-qty-input[data-line-id="${lineId}"]`);
         const current = parseInt(input.value, 10) || 1;
         const next = action === 'inc' ? current + 1 : Math.max(1, current - 1);
-        try {
-          await updateCartLine(lineId, next);
-        } catch (err) {
-          console.error('更新購物車數量失敗:', err);
-        }
-        renderCurrentCart();
+        applyLineUpdate(lineId, () => updateCartLine(lineId, next));
       });
     });
 
     cartBody.querySelectorAll('.cart-qty-input').forEach((input) => {
-      input.addEventListener('change', async () => {
+      input.addEventListener('change', () => {
         const { lineId } = input.dataset;
         const next = Math.max(1, parseInt(input.value, 10) || 1);
-        try {
-          await updateCartLine(lineId, next);
-        } catch (err) {
-          console.error('更新購物車數量失敗:', err);
-        }
-        renderCurrentCart();
+        applyLineUpdate(lineId, () => updateCartLine(lineId, next));
       });
     });
 
     cartBody.querySelectorAll('.cart-row-remove').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        try {
-          await removeFromCart(btn.dataset.lineId);
-        } catch (err) {
-          console.error('刪除購物車項目失敗:', err);
-        }
-        renderCurrentCart();
+      btn.addEventListener('click', () => {
+        applyLineUpdate(btn.dataset.lineId, () => removeFromCart(btn.dataset.lineId));
       });
     });
   }
 
-  await renderCurrentCart();
+  try {
+    const cart = await getOrCreateCart();
+    renderCurrentCart(cart);
+  } catch (err) {
+    console.error('讀取購物車失敗:', err);
+    cartBody.innerHTML = `<p class="cart-empty-text">購物車讀取失敗，請重新整理再試一次。</p>`;
+  }
 }
 
 // ---------- 購物車數量徽章(header,所有頁面共用) ----------
