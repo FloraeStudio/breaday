@@ -8,33 +8,61 @@ import { addToCart } from './cart-service.js';
 // #featured-grid:首頁(index.html)的精選預覽,只取前 3 件
 const FEATURED_COUNT = 3;
 
-// 目前只有兩種分類:麵包(預設分類,後台沒填 Product type 的商品都算這裡)、咖啡。
-// 之後要加第三種分類,在這裡多加一組 config、products.html 多加一個 <ul id="product-list-xxx">
-// 區塊即可,不用動渲染邏輯。
-const MENU_CATEGORIES = [
-  { listId: 'product-list-bread', sectionId: 'menu-category-bread', match: (category) => !/coffee|咖啡/i.test(category) },
-  { listId: 'product-list-coffee', sectionId: 'menu-category-coffee', match: (category) => /coffee|咖啡/i.test(category) },
-];
+// 目前只有兩種分類:麵包(預設,後台 Product type 沒填的商品都算這裡)、咖啡。
+// 之後要加第三種分類,在這裡多加一組 filter、products.html 多加一個分類頁籤按鈕即可。
+const CATEGORY_FILTERS = {
+  all: () => true,
+  bread: (category) => !/coffee|咖啡/i.test(category),
+  coffee: (category) => /coffee|咖啡/i.test(category),
+};
 
 async function initProducts() {
   const featuredGrid = document.getElementById('featured-grid');
-  const fullList = document.getElementById('product-list'); // 舊版單一清單(若頁面還在用)
-  const hasMenuCategories = MENU_CATEGORIES.some((c) => document.getElementById(c.listId));
-  if (!featuredGrid && !fullList && !hasMenuCategories) return;
+  const fullList = document.getElementById('product-list');
+  if (!featuredGrid && !fullList) return;
 
-  const products = await getProducts();
+  let products = [];
+  try {
+    products = await getProducts();
+  } catch (err) {
+    console.error('讀取商品列表失敗:', err);
+  }
+
   if (featuredGrid) renderProducts(featuredGrid, products.slice(0, FEATURED_COUNT));
-  if (fullList) renderProductList(fullList, products);
+  if (!fullList) return;
 
-  // 商品列表頁(products.html):按 Product type 分成「麵包 / 咖啡」兩個菜單式區塊，
-  // 沒有商品的分類直接隱藏整個區塊，不留空標題
-  MENU_CATEGORIES.forEach(({ listId, sectionId, match }) => {
-    const listEl = document.getElementById(listId);
-    if (!listEl) return;
-    const filtered = products.filter((p) => match(p.category || ''));
-    renderProductList(listEl, filtered);
-    const sectionEl = document.getElementById(sectionId);
-    if (sectionEl) sectionEl.hidden = filtered.length === 0;
+  const emptyState = document.getElementById('product-list-empty');
+  const tabs = document.querySelectorAll('.menu-tab');
+
+  if (!products.length) {
+    fullList.hidden = true;
+    if (emptyState) {
+      emptyState.hidden = false;
+      emptyState.textContent = '目前讀取不到商品，請稍後再試一次。';
+    }
+    return;
+  }
+
+  const renderFiltered = (filterKey) => {
+    const matcher = CATEGORY_FILTERS[filterKey] || CATEGORY_FILTERS.all;
+    const filtered = products.filter((p) => matcher(p.category || ''));
+    renderProductList(fullList, filtered);
+    fullList.hidden = filtered.length === 0;
+    if (emptyState) emptyState.hidden = filtered.length !== 0;
+    initScrollReveal(); // 重新掛觀察者,讓切換分類後新插入的項目也會淡入
+  };
+
+  renderFiltered('all');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      if (tab.classList.contains('is-active')) return;
+      tabs.forEach((t) => {
+        t.classList.toggle('is-active', t === tab);
+        t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+      });
+      renderFiltered(tab.dataset.filter);
+    });
   });
 }
 

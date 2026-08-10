@@ -26,7 +26,7 @@
                 <nav class="breadcrumb" aria-label="breadcrumb">
                     <ol>
                         <li><a href="index.html">首頁</a></li>
-                        <li>PRODUCT LIST</li>
+                        <li>所有商品</li>
                     </ol>
                 </nav>
 
@@ -38,32 +38,16 @@
                     <p class="product-list-desc">當日現做，用心，讓吃也安心。</p>
                 </div>
 
-                <nav class="menu-categories scroll-reveal" aria-label="商品分類">
-                    <a href="#menu-category-bread">麵包</a>
-                    <a href="#menu-category-coffee">咖啡</a>
-                </nav>
+                <div class="menu-tabs scroll-reveal" role="tablist" aria-label="商品分類">
+                    <button type="button" class="menu-tab is-active" data-filter="all" role="tab" aria-selected="true">所有商品</button>
+                    <button type="button" class="menu-tab" data-filter="bread" role="tab" aria-selected="false">麵包</button>
+                    <button type="button" class="menu-tab" data-filter="coffee" role="tab" aria-selected="false">咖啡</button>
+                </div>
 
-                <section class="menu-category" id="menu-category-bread">
-                    <div class="menu-category-head scroll-reveal">
-                        <h2 class="menu-category-title">麵包</h2>
-                        <span class="menu-category-en">BREAD</span>
-                        <div class="menu-category-divider" aria-hidden="true"></div>
-                    </div>
-                    <ul class="product-list" id="product-list-bread">
-                        <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
-                    </ul>
-                </section>
-
-                <section class="menu-category" id="menu-category-coffee">
-                    <div class="menu-category-head scroll-reveal">
-                        <h2 class="menu-category-title">咖啡</h2>
-                        <span class="menu-category-en">COFFEE</span>
-                        <div class="menu-category-divider" aria-hidden="true"></div>
-                    </div>
-                    <ul class="product-list" id="product-list-coffee">
-                        <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
-                    </ul>
-                </section>
+                <ul class="product-list" id="product-list">
+                    <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
+                </ul>
+                <p class="product-list-empty" id="product-list-empty" hidden>這個分類目前還沒有商品，敬請期待。</p>
             </div>
         </section>
     </main>

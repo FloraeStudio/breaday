@@ -46,88 +46,65 @@
     max-width: 42ch;
 }
 
-/* ---------- 分類導覽(菜單式總覽) ----------
-   點了就用瀏覽器原生錨點跳到對應分類區塊,不用寫額外的 JS 篩選邏輯，
-   跟 header nav 同一套「hover 才畫底線」語彙 */
-.menu-categories {
+/* ---------- 分類頁籤 ----------
+   跟 nav a / product-name::after 同一套「hover 才畫底線,選中固定底線」語彙，
+   點了原地換清單內容,不分段、不跳頁 */
+.menu-tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 28px;
-    padding-bottom: 18px;
     margin-bottom: var(--space-8);
-    border-bottom: 1px solid var(--color-line);
 }
 
-.menu-categories a {
+.menu-tab {
     position: relative;
-    font-size: 13px;
-    letter-spacing: 0.15em;
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    letter-spacing: 0.1em;
     color: var(--color-text-soft);
-    padding-bottom: 4px;
-    transition: color .25s ease;
+    background: transparent;
+    border: none;
+    padding: 4px 0 8px;
+    cursor: pointer;
+    transition: color .3s ease;
 }
 
-.menu-categories a::after {
+.menu-tab::after {
     content: '';
     position: absolute;
     left: 0;
+    right: 0;
     bottom: 0;
-    width: 0;
     height: 1px;
     background: var(--color-accent);
-    transition: width .25s ease;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .35s cubic-bezier(.22, .68, 0, 1);
 }
 
-.menu-categories a:hover {
+.menu-tab:hover {
     color: var(--color-text);
 }
 
-.menu-categories a:hover::after {
-    width: 100%;
+.menu-tab.is-active {
+    color: var(--color-text);
 }
 
-/* ---------- 分類區塊(菜單式標題) ---------- */
-.menu-category {
-    margin-bottom: var(--space-12);
-    /* 錨點跳轉時,標題不要被 sticky header 蓋住 */
-    scroll-margin-top: 96px;
+.menu-tab.is-active::after {
+    transform: scaleX(1);
 }
 
-.menu-category:last-child {
-    margin-bottom: 0;
+.product-list-empty {
+    padding: 48px 0;
+    border-top: 1px solid var(--color-line);
+    color: var(--color-text-soft);
+    font-size: 14px;
+    text-align: center;
 }
 
-.menu-category-head {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin-bottom: 8px;
-}
-
-.menu-category-title {
-    font-family: var(--font-display-zh);
-    font-weight: 500;
-    font-size: clamp(19px, 2.4vw, 24px);
-}
-
-.menu-category-en {
-    font-family: var(--font-display-en);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-}
-
-.menu-category-divider {
-    flex: 1;
-    height: 1px;
-    background: var(--color-line);
-    margin-left: 8px;
-}
-
-@media (max-width:640px) {
-    .menu-categories {
-        gap: 20px;
+@media (prefers-reduced-motion: reduce) {
+    .menu-tab::after {
+        transition: none;
     }
 }
 
