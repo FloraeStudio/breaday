@@ -211,11 +211,17 @@ async function initProductDetail() {
       try {
         const cart = await addToCart(variant.id, quantity);
         if (feedbackEl) {
-          feedbackEl.innerHTML = `已加入購物車 ✓ <a href="${cart.checkoutUrl}" class="pd-checkout-link">前往結帳 →</a>`;
+          feedbackEl.innerHTML = `
+          <span class="pd-feedback-success">
+            <span class="pd-feedback-line" aria-hidden="true"></span>
+            <span class="pd-feedback-text">已加入購物車</span>
+            <a href="${cart.checkoutUrl}" class="pd-checkout-link">前往結帳 →</a>
+          </span>
+        `;
         }
       } catch (err) {
         console.error('加入購物車失敗:', err);
-        if (feedbackEl) feedbackEl.textContent = '加入購物車失敗，請稍後再試一次。';
+        if (feedbackEl) feedbackEl.innerHTML = `<span class="pd-feedback-error">加入購物車失敗，請稍後再試一次。</span>`;
       } finally {
         addBtn.disabled = !variant.available;
         addBtn.textContent = originalLabel;
