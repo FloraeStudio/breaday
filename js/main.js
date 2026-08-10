@@ -461,45 +461,65 @@ const CRAFT_SWAP_MS = 420; // 要跟 css/about-page.css 的 .craft-frame-img 過
 
 function initCraftGallery() {
   const mainImg = document.getElementById('craft-main-img');
+  const frame = document.getElementById('craft-frame');
   const frameIndex = document.getElementById('craft-frame-index');
   const caption = document.getElementById('craft-caption');
   const captionTitle = document.getElementById('craft-caption-title');
   const captionDesc = document.getElementById('craft-caption-desc');
-  const thumbs = document.querySelectorAll('.craft-thumb');
+  const thumbs = Array.from(document.querySelectorAll('.craft-thumb'));
   if (!mainImg || !thumbs.length) return;
 
-  thumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => {
-      if (thumb.classList.contains('is-active')) return;
+  const goToThumb = (thumb) => {
+    if (!thumb || thumb.classList.contains('is-active')) return;
 
-      thumbs.forEach((t) => {
-        t.classList.toggle('is-active', t === thumb);
-        t.setAttribute('aria-selected', t === thumb ? 'true' : 'false');
-      });
-
-      mainImg.classList.add('is-swapping');
-      if (caption) caption.classList.add('is-updating');
-
-      window.setTimeout(() => {
-        mainImg.src = thumb.dataset.src;
-        mainImg.alt = thumb.dataset.title || '';
-        if (frameIndex) frameIndex.textContent = thumb.dataset.index || '';
-        if (captionTitle) captionTitle.textContent = thumb.dataset.title || '';
-        if (captionDesc) captionDesc.textContent = thumb.dataset.desc || '';
-
-        // 換完圖再讓大圖從「放大+位移」的狀態收回原位,製造前後兩段對稱的視差感
-        mainImg.classList.remove('is-swapping');
-        if (caption) caption.classList.remove('is-updating');
-      }, CRAFT_SWAP_MS);
+    thumbs.forEach((t) => {
+      t.classList.toggle('is-active', t === thumb);
+      t.setAttribute('aria-selected', t === thumb ? 'true' : 'false');
     });
+
+    mainImg.classList.add('is-swapping');
+    if (caption) caption.classList.add('is-updating');
+
+    window.setTimeout(() => {
+      mainImg.src = thumb.dataset.src;
+      mainImg.alt = thumb.dataset.title || '';
+      if (frameIndex) frameIndex.textContent = thumb.dataset.index || '';
+      if (captionTitle) captionTitle.textContent = thumb.dataset.title || '';
+      if (captionDesc) captionDesc.textContent = thumb.dataset.desc || '';
+
+      // 換完圖再讓大圖從「放大+位移」的狀態收回原位,製造前後兩段對稱的視差感
+      mainImg.classList.remove('is-swapping');
+      if (caption) caption.classList.remove('is-updating');
+    }, CRAFT_SWAP_MS);
+  };
+
+  thumbs.forEach((thumb) => {
+    thumb.addEventListener('click', () => goToThumb(thumb));
   });
+
+  // 大圖本身也能點:往下一張推進(到底再繞回第一張),
+  // 讓「換圖」不是只能靠旁邊的縮圖列，大圖也是一個可互動的入口
+  if (frame) {
+    const goNext = () => {
+      const activeIdx = thumbs.findIndex((t) => t.classList.contains('is-active'));
+      const nextThumb = thumbs[(activeIdx + 1) % thumbs.length];
+      goToThumb(nextThumb);
+    };
+    frame.addEventListener('click', goNext);
+    frame.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        goNext();
+      }
+    });
+  }
 }
 
 // ---------- 通用捲動視差:給任何帶 data-parallax="速度" 的元素用 ----------
 // 速度是 0~1 的相對值,數字越大位移越明顯。之後 Products / Contact 要加視差,
 // 直接在該元素上補一個 data-parallax 屬性即可,不用再寫新的滾動邏輯。
-const PARALLAX_STRENGTH = 300; // 振幅倍率：先前用 100，對 0.06~0.16 這種小 speed 值只會位移 3~8px，
-// 肉眼幾乎看不出來(跟 hero 的 ±150px 差太多),調到 300 讓其他區塊也感覺得到
+const PARALLAX_STRENGTH = 420; // 振幅倍率：原本 300 對 About 頁新增的出血大圖/職人日常區塊來說不夠明顯，
+// 拉高到 420，同一組 data-parallax 數值(0.06~0.16)會等比例位移更多，跟 Hero 的 ±150px 手感更接近
 
 function initParallax() {
   const els = document.querySelectorAll('[data-parallax]');

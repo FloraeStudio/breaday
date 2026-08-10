@@ -2,6 +2,30 @@
    只有 about.html 會用到,所以獨立成頁面專屬檔案,不放進跨頁共用的 sections.css,
    跟 product-page.css / products-page.css / cart-page.css 走同一套慣例。 */
 
+/* ---------- 品牌小語(日文原文標語)----------
+   客戶提供的日文原始標語,放在 H1 正下方當作一句安靜的簽名,
+   字級刻意壓低、不搶標題,呼應日系品牌常見的「原文小字註記」排法 */
+.about-motto {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.about-motto-jp,
+.about-motto-note {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  letter-spacing: 0.03em;
+  color: var(--color-text-soft);
+  font-style: italic;
+}
+
+.about-motto-jp {
+  color: var(--color-accent);
+}
+
 /* ---------- 共用:小標籤(水平),獨立頁面版的「編號小標」----------
    about.html 是獨立頁面,不用首頁單頁滾動專用的直排 .section-index,
    改用比 .page-kicker 再輕一階、可以重複出現在同一頁多個區塊的水平標籤 */
@@ -41,7 +65,8 @@
     minmax(24px, calc((100vw - var(--container-w)) / 2 + 32px))
     minmax(240px, 400px)
     1fr;
-  align-items: center;
+  align-items: start;
+  padding-top: 24px;
   column-gap: 48px;
 }
 
@@ -55,6 +80,14 @@
   font-size: clamp(19px, 2.4vw, 24px);
   line-height: 1.75;
   color: var(--color-text);
+}
+
+.story-bleed-text {
+  margin-top: 18px;
+  font-size: 13.5px;
+  line-height: 1.95;
+  color: var(--color-text-soft);
+  max-width: 34em;
 }
 
 .story-bleed-divider {
@@ -86,22 +119,33 @@
   }
 }
 
+/* 進場淡入/放大收回交給這一層(純 CSS transition，跟著 .is-visible 只跑一次)。
+   底下的 img 本身完全交給 main.js 的 initParallax 逐格更新 transform，
+   兩層分開才不會互相覆蓋──img 如果同時被 CSS transition 和 JS rAF 改同一個
+   transform，畫面只會看到 JS 每 16ms 蓋掉一次 CSS 的過渡值，動畫等於失效。 */
+.story-bleed-img-wrap {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 1.1s cubic-bezier(.22, .68, 0, 1),
+    transform 1.4s cubic-bezier(.22, .68, 0, 1);
+}
+
+.story-bleed.is-visible .story-bleed-img-wrap {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .story-bleed-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.1);
-  /* 進場先放大一點,揭幕時緩緩收回原尺寸,搭配 initParallax 之後改由捲動接手位移 */
-  opacity: 0;
-  transition: opacity 1.1s cubic-bezier(.22, .68, 0, 1),
-    transform 1.4s cubic-bezier(.22, .68, 0, 1);
-}
-
-.story-bleed.is-visible .story-bleed-img {
-  opacity: 1;
-  transform: scale(1.02);
+  will-change: transform;
+  /* 初始 scale 由 data-parallax-scale 直接透過行內 style 套用(main.js)，
+     這裡不用再寫 transform，避免跟 JS 打架 */
 }
 
 /* 鏤空浮水印字,跟首頁 Hero 的 .hero-media-mark 同一套語彙,
@@ -179,8 +223,8 @@
 
 .craft-gallery {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 40px;
+  grid-template-columns: 2.6fr 1fr;
+  gap: 32px;
   align-items: start;
 }
 
@@ -197,9 +241,45 @@
 
 .craft-frame {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
   background: var(--color-line);
+  cursor: pointer;
+}
+
+.craft-frame:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+/* 大圖本身也能點,滑過去給一點提示,呼應 product-media-img 的 hover 放大語彙,
+   讓使用者知道這裡不是純展示,點下去會換下一張 */
+.craft-frame:hover .craft-frame-img,
+.craft-frame:focus-visible .craft-frame-img {
+  transform: scale(1.03);
+}
+
+.craft-frame::after {
+  content: '下一張 →';
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--color-white);
+  background: rgba(37, 37, 37, 0.42);
+  padding: 6px 10px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.craft-frame:hover::after,
+.craft-frame:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .craft-frame-img {
@@ -337,7 +417,7 @@
 
 @media (prefers-reduced-motion: reduce) {
 
-  .story-bleed-img,
+  .story-bleed-img-wrap,
   .story-bleed-divider,
   .story-bleed-mark-in,
   .craft-frame-img {
@@ -345,8 +425,12 @@
     animation: none !important;
   }
 
-  .story-bleed-img {
+  .story-bleed-img-wrap {
     opacity: 1;
+    transform: none;
+  }
+
+  .story-bleed-img {
     transform: none;
   }
 

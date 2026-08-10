@@ -34,6 +34,10 @@
             <div class="about-text scroll-reveal">
                 <div class="about-text-body">
                     <h1 class="about-title">用日常的心意，<br>做值得每天期待的麵包。</h1>
+                    <p class="about-motto">
+                        <span class="about-motto-jp">BREADAYは「毎日食べたいと思ってもらえるパン屋」</span>
+                        <span class="about-motto-note">BREADAY = BREAD × DAY，日々丁寧なパン作りを心掛けてます。</span>
+                    </p>
                     <div class="about-divider" aria-hidden="true"></div>
                     <div class="about-body">
                         <p>我們以「希望成為讓人每天都想吃的麵包店」為目標，用心地進行每天的麵包製作。</p>
@@ -48,7 +52,7 @@
             </div>
         </section>
 
-        <!-- 單張出血大圖:店裡的風景,圖片刻意撐出容器右緣,呼應日系雜誌內頁的滿版跨欄手法 -->
+        <!-- 單張出血大圖:創辦人故事,圖片刻意撐出容器右緣,呼應日系雜誌內頁的滿版跨欄手法 -->
         <section class="section story-section">
             <div class="story-bleed scroll-reveal">
                 <div class="story-bleed-copy">
@@ -56,12 +60,18 @@
                         <span>02</span>
                         <span>OUR BAKERY</span>
                     </div>
-                    <p class="story-bleed-title">從熊本的一間小店開始，<br>用看得見的食材，做每天都想吃的麵包。</p>
+                    <p class="story-bleed-title">來自熊本的道地手作烘焙坊，<br>BREADAY 熊本</p>
+                    <p class="story-bleed-text">
+                        由曾赴德國🇩🇪深造的年輕女性職人親手打造。<br>為了追尋歐洲麵包製作的最根本，她隻身前往德國，在當地的烘焙坊中，紮實地學習了實務技術，以及職人面對每一顆麵包的嚴謹態度。<br>學成歸國後，她進入福岡知名排隊名店「Pain
+                        Stock」歷練。2023年，她帶著累積多年的深厚底蘊，在家鄉熊本創立了屬於自己的烘焙品牌。<br>我們不盲目追求流行，而是將目標放在製作出能留在顧客記憶深處的「日常美味」。
+                        BREADAY 每天都用心揉捏烘焙，只為將最純粹的麵包香，傳遞到您的生活裡。</p>
                     <div class="story-bleed-divider" aria-hidden="true"></div>
                 </div>
                 <figure class="story-bleed-media">
-                    <img src="assets/images/hero/hero-01.webp" alt="BREADAY 熊本店內剛出爐陳列的麵包"
-                        class="story-bleed-img" data-parallax="0.06">
+                    <div class="story-bleed-img-wrap">
+                        <img src="assets/images/about/about-01.webp" alt="BREADAY 創辦小故事"
+                            class="story-bleed-img" data-parallax="0.16" data-parallax-scale="1.3">
+                    </div>
                     <span class="story-bleed-mark" aria-hidden="true">
                         <span class="story-bleed-mark-in">KUMAMOTO</span>
                     </span>
@@ -79,12 +89,13 @@
                     </div>
                     <h2 class="products-title">職人的每一天</h2>
                     <div class="products-divider" aria-hidden="true"></div>
-                    <p class="craft-head-desc">點選右側的縮圖，看看麵包送到你手上之前，經過了哪些日常。</p>
+                    <p class="craft-head-desc">點選右側的照片，或直接點大圖，看看烘焙坊裡屬於 BREADAY 的日常片刻。</p>
                 </div>
 
                 <div class="craft-gallery scroll-reveal">
-                    <div class="craft-main" data-parallax="0.04">
-                        <figure class="craft-frame">
+                    <div class="craft-main" data-parallax="0.16">
+                        <figure class="craft-frame" id="craft-frame" tabindex="0" role="button"
+                            aria-label="點擊切換下一張照片">
                             <img id="craft-main-img" class="craft-frame-img"
                                 src="assets/images/hero/hero-03.webp" alt="嚴選食材">
                             <span class="craft-frame-index" id="craft-frame-index">01</span>
