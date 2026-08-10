@@ -26,37 +26,23 @@
 }
 
 /* ================================================================
-   1) 單張出血大圖 ── 「展示一張圖」
-   不塞進 .container,section 直接用 grid 分左右欄,
-   右欄(圖片)故意留一個會撐到視窗右緣的 1fr,達成出血效果,
-   不用任何 100vw / 負 margin 的 hack，網格軌道本身自然撐滿。
+   1) 故事區塊 ── 文字在上、大圖在下的直式編輯排版
+   容器內滿版走一條直線下來，桌機/手機是同一套版面，
+   不做出血跨欄，行為單純不容易對不齊。
    ================================================================ */
-.story-section {
-  overflow: hidden;
+.story-block {
+  max-width: 720px;
 }
 
-.story-bleed {
-  display: grid;
-  grid-template-columns:
-    minmax(24px, calc((100vw - var(--container-w)) / 2 + 32px)) minmax(240px, 400px) 1fr;
-  align-items: start;
-  padding-top: 24px;
-  column-gap: 48px;
-}
-
-.story-bleed-copy {
-  grid-column: 2;
-}
-
-.story-bleed-title {
+.story-block-title {
   font-family: var(--font-display-zh);
   font-weight: 500;
-  font-size: clamp(19px, 2.4vw, 24px);
+  font-size: clamp(20px, 2.6vw, 26px);
   line-height: 1.75;
   color: var(--color-text);
 }
 
-.story-bleed-text {
+.story-block-text {
   margin-top: 18px;
   font-size: 13.5px;
   line-height: 1.95;
@@ -64,125 +50,81 @@
   max-width: 34em;
 }
 
-.story-bleed-divider {
+.story-block-divider {
   width: 56px;
   height: 1px;
   background: var(--color-accent);
   opacity: 0.6;
-  margin-top: 20px;
+  margin: 28px 0 36px;
   transform-origin: left center;
   transform: scaleX(0);
   transition: transform 0.8s cubic-bezier(.22, .68, 0, 1);
   transition-delay: 0.25s;
 }
 
-.story-bleed.is-visible .story-bleed-divider {
+.story-block.is-visible .story-block-divider {
   transform: scaleX(1);
 }
 
-.story-bleed-media {
-  grid-column: 3;
+.story-block-media {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 21 / 9;
   overflow: hidden;
 }
 
-/* 鏡射版本:圖片改從左側出血，文字放右邊，跟第一段交錯呼吸 */
-.story-bleed--reverse {
-  grid-template-columns:
-    1fr minmax(240px, 400px) minmax(24px, calc((100vw - var(--container-w)) / 2 + 32px));
-}
-
-.story-bleed--reverse .story-bleed-media {
-  grid-column: 1;
-}
-
-.story-bleed--reverse .story-bleed-copy {
-  grid-column: 2;
-}
-
-@media (min-width: 861px) {
-  .story-bleed-media {
-    aspect-ratio: 16 / 9;
+@media (max-width:640px) {
+  .story-block-media {
+    aspect-ratio: 4 / 3;
   }
 }
 
-/* 進場淡入/放大收回交給這一層(純 CSS transition，跟著 .is-visible 只跑一次)。
-   底下的 img 本身完全交給 main.js 的 initParallax 逐格更新 transform，
-   兩層分開才不會互相覆蓋──img 如果同時被 CSS transition 和 JS rAF 改同一個
-   transform，畫面只會看到 JS 每 16ms 蓋掉一次 CSS 的過渡值，動畫等於失效。 */
-.story-bleed-img-wrap {
+.story-block-parallax {
   position: absolute;
   inset: 0;
-  opacity: 0;
-  transform: scale(1.06);
-  transition: opacity 1.1s cubic-bezier(.22, .68, 0, 1),
-    transform 1.4s cubic-bezier(.22, .68, 0, 1);
+  width: 100%;
+  height: 100%;
+  will-change: transform;
 }
 
-.story-bleed.is-visible .story-bleed-img-wrap {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.story-bleed-img {
+.story-block-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  will-change: transform;
-  /* 初始 scale 由 data-parallax-scale 直接透過行內 style 套用(main.js)，
-     這裡不用再寫 transform，避免跟 JS 打架 */
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 1.1s cubic-bezier(.22, .68, 0, 1), transform 1.4s cubic-bezier(.22, .68, 0, 1);
 }
 
-/* 鏤空浮水印字,跟首頁 Hero 的 .hero-media-mark 同一套語彙,
-   只在這裡再用一次,強化「熊本」品牌出處,進場後只跑一次上浮動畫就靜止 */
-.story-bleed-mark {
+.story-block.is-visible .story-block-img {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.story-block-mark {
   position: absolute;
   right: 20px;
-  bottom: 16px;
+  bottom: 14px;
   font-family: var(--font-display-en);
   font-weight: 300;
-  font-size: clamp(32px, 6vw, 88px);
+  font-size: clamp(24px, 4vw, 56px);
   letter-spacing: 0.06em;
-  line-height: 1;
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
   mix-blend-mode: overlay;
   pointer-events: none;
   user-select: none;
   z-index: 1;
-}
-
-.story-bleed-mark-in {
-  display: inline-block;
   opacity: 0;
-  transform: translateY(20px);
-}
-
-.story-bleed.is-visible .story-bleed-mark-in {
-  opacity: 0.85;
-  transform: translateY(0);
+  transform: translateY(16px);
   transition: opacity 1s cubic-bezier(.22, .68, 0, 1), transform 1s cubic-bezier(.22, .68, 0, 1);
   transition-delay: 0.6s;
 }
 
-@media (max-width: 860px) {
-  .story-bleed {
-    grid-template-columns: 1fr;
-    row-gap: 28px;
-    padding: 0 20px;
-  }
-
-  .story-bleed-copy,
-  .story-bleed-media {
-    grid-column: 1;
-  }
-
-  .story-bleed-media {
-    aspect-ratio: 4 / 3;
-  }
+.story-block.is-visible .story-block-mark {
+  opacity: 0.85;
+  transform: translateY(0);
 }
 
 /* ================================================================
@@ -197,16 +139,25 @@
 }
 
 .craft-head {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr minmax(200px, 320px);
+  align-items: end;
+  gap: 40px;
   margin-bottom: var(--space-6);
 }
 
 .craft-head-desc {
   font-size: 13.5px;
   color: var(--color-text-soft);
-  margin-top: 14px;
-  max-width: 32em;
+  margin: 0;
+  padding-bottom: 4px;
+}
+
+@media (max-width:640px) {
+  .craft-head {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 .craft-gallery {
@@ -214,6 +165,14 @@
   grid-template-columns: 1fr 200px;
   gap: 28px;
   align-items: start;
+}
+
+.craft-frame-parallax {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
 }
 
 @media (max-width: 860px) {
@@ -405,28 +364,24 @@
 
 @media (prefers-reduced-motion: reduce) {
 
-  .story-bleed-img-wrap,
-  .story-bleed-divider,
-  .story-bleed-mark-in,
+  .story-block-img,
+  .story-block-divider,
+  .story-block-mark,
   .craft-frame-img {
     transition: none !important;
     animation: none !important;
   }
 
-  .story-bleed-img-wrap {
+  .story-block-img {
     opacity: 1;
     transform: none;
   }
 
-  .story-bleed-img {
-    transform: none;
-  }
-
-  .story-bleed-divider {
+  .story-block-divider {
     transform: scaleX(1);
   }
 
-  .story-bleed-mark-in {
+  .story-block-mark {
     opacity: 0.85;
     transform: none;
   }
