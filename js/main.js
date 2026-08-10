@@ -215,7 +215,7 @@ async function initProductDetail() {
           <span class="pd-feedback-success">
             <span>已加入購物車</span>
             <span class="pd-feedback-sep" aria-hidden="true">・</span>
-            <a href="${cart.checkoutUrl}" class="pd-checkout-link">前往結帳 →</a>
+            <a href="cart.html" class="pd-checkout-link">查看購物車 →</a>
           </span>
         `;
         }
@@ -504,6 +504,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await initProducts();  // 產品卡先插入 DOM
   await initProductDetail(); // 商品詳情頁(product.html)：只有存在 #product-detail 時才會動作
   await initCartPage();
+  initCartCount();       // header 購物車數量徽章：所有頁面都要顯示，不能只靠 initCartPage
   initScrollReveal();    // 再統一掛上滾動淡入觀察者(含剛插入的產品卡/商品詳情內容)
   initParallax();        // About 圖片、精選商品第一張圖的輕微視差
 });
