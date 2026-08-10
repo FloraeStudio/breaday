@@ -26,36 +26,47 @@
 }
 
 /* ================================================================
-   1) 故事區塊 ── 文字在上、大圖在下的直式編輯排版
-   容器內滿版走一條直線下來，桌機/手機是同一套版面，
-   不做出血跨欄，行為單純不容易對不齊。
+   1) 故事區塊 ── 兩欄圖文，收在 .container 裡不出血，
+   圖片刻意縮小、留大量空白，底下配一行圖說，
+   靠留白跟排版比例做精緻感，不靠圖片尺寸搶戲。
    ================================================================ */
 .story-block {
-  max-width: 720px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.story-block--reverse .story-block-copy {
+  order: 2;
+}
+
+.story-block--reverse .story-block-media {
+  order: 1;
 }
 
 .story-block-title {
   font-family: var(--font-display-zh);
   font-weight: 500;
-  font-size: clamp(20px, 2.6vw, 26px);
-  line-height: 1.75;
+  font-size: clamp(20px, 2.4vw, 25px);
+  line-height: 1.8;
   color: var(--color-text);
 }
 
 .story-block-text {
-  margin-top: 18px;
+  margin-top: 20px;
   font-size: 13.5px;
-  line-height: 1.95;
+  line-height: 2;
   color: var(--color-text-soft);
-  max-width: 34em;
+  max-width: 32em;
 }
 
 .story-block-divider {
-  width: 56px;
+  width: 48px;
   height: 1px;
   background: var(--color-accent);
   opacity: 0.6;
-  margin: 28px 0 36px;
+  margin-top: 30px;
   transform-origin: left center;
   transform: scaleX(0);
   transition: transform 0.8s cubic-bezier(.22, .68, 0, 1);
@@ -68,23 +79,12 @@
 
 .story-block-media {
   position: relative;
-  max-width: 460px;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
-  margin-left: auto;
-}
-
-@media (max-width:640px) {
-  .story-block-media {
-    aspect-ratio: 4 / 3;
-  }
 }
 
 .story-block-parallax {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
   will-change: transform;
 }
 
@@ -106,20 +106,20 @@
 
 .story-block-mark {
   position: absolute;
-  right: 20px;
+  right: 16px;
   bottom: 14px;
   font-family: var(--font-display-en);
   font-weight: 300;
-  font-size: clamp(24px, 4vw, 56px);
+  font-size: clamp(20px, 3vw, 34px);
   letter-spacing: 0.06em;
   color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+  -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.85);
   mix-blend-mode: overlay;
   pointer-events: none;
   user-select: none;
   z-index: 1;
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(12px);
   transition: opacity 1s cubic-bezier(.22, .68, 0, 1), transform 1s cubic-bezier(.22, .68, 0, 1);
   transition-delay: 0.6s;
 }
@@ -127,6 +127,25 @@
 .story-block.is-visible .story-block-mark {
   opacity: 0.85;
   transform: translateY(0);
+}
+
+.story-block-caption {
+  margin-top: 14px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--color-text-soft);
+}
+
+@media (max-width:860px) {
+  .story-block {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .story-block--reverse .story-block-copy,
+  .story-block--reverse .story-block-media {
+    order: 0;
+  }
 }
 
 /* ================================================================
