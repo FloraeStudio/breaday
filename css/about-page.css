@@ -1,0 +1,361 @@
+/* about.html 專屬樣式:圖文說明區塊(單張出血大圖 + 可替換的職人日常圖庫)。
+   只有 about.html 會用到,所以獨立成頁面專屬檔案,不放進跨頁共用的 sections.css,
+   跟 product-page.css / products-page.css / cart-page.css 走同一套慣例。 */
+
+/* ---------- 共用:小標籤(水平),獨立頁面版的「編號小標」----------
+   about.html 是獨立頁面,不用首頁單頁滾動專用的直排 .section-index,
+   改用比 .page-kicker 再輕一階、可以重複出現在同一頁多個區塊的水平標籤 */
+.story-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display-en);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: var(--color-accent);
+  margin-bottom: var(--space-3);
+}
+
+.story-label span:last-child {
+  font-family: var(--font-body);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--color-text-soft);
+  font-size: 11px;
+}
+
+/* ================================================================
+   1) 單張出血大圖 ── 「展示一張圖」
+   不塞進 .container,section 直接用 grid 分左右欄,
+   右欄(圖片)故意留一個會撐到視窗右緣的 1fr,達成出血效果,
+   不用任何 100vw / 負 margin 的 hack，網格軌道本身自然撐滿。
+   ================================================================ */
+.story-section {
+  overflow: hidden;
+}
+
+.story-bleed {
+  display: grid;
+  grid-template-columns:
+    minmax(24px, calc((100vw - var(--container-w)) / 2 + 32px))
+    minmax(240px, 400px)
+    1fr;
+  align-items: center;
+  column-gap: 48px;
+}
+
+.story-bleed-copy {
+  grid-column: 2;
+}
+
+.story-bleed-title {
+  font-family: var(--font-display-zh);
+  font-weight: 500;
+  font-size: clamp(19px, 2.4vw, 24px);
+  line-height: 1.75;
+  color: var(--color-text);
+}
+
+.story-bleed-divider {
+  width: 56px;
+  height: 1px;
+  background: var(--color-accent);
+  opacity: 0.6;
+  margin-top: 20px;
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.8s cubic-bezier(.22, .68, 0, 1);
+  transition-delay: 0.25s;
+}
+
+.story-bleed.is-visible .story-bleed-divider {
+  transform: scaleX(1);
+}
+
+.story-bleed-media {
+  grid-column: 3;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+@media (min-width: 861px) {
+  .story-bleed-media {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.story-bleed-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.1);
+  /* 進場先放大一點,揭幕時緩緩收回原尺寸,搭配 initParallax 之後改由捲動接手位移 */
+  opacity: 0;
+  transition: opacity 1.1s cubic-bezier(.22, .68, 0, 1),
+    transform 1.4s cubic-bezier(.22, .68, 0, 1);
+}
+
+.story-bleed.is-visible .story-bleed-img {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+/* 鏤空浮水印字,跟首頁 Hero 的 .hero-media-mark 同一套語彙,
+   只在這裡再用一次,強化「熊本」品牌出處,進場後只跑一次上浮動畫就靜止 */
+.story-bleed-mark {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  font-family: var(--font-display-en);
+  font-weight: 300;
+  font-size: clamp(32px, 6vw, 88px);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.story-bleed-mark-in {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.story-bleed.is-visible .story-bleed-mark-in {
+  opacity: 0.85;
+  transform: translateY(0);
+  transition: opacity 1s cubic-bezier(.22, .68, 0, 1), transform 1s cubic-bezier(.22, .68, 0, 1);
+  transition-delay: 0.6s;
+}
+
+@media (max-width: 860px) {
+  .story-bleed {
+    grid-template-columns: 1fr;
+    row-gap: 28px;
+    padding: 0 20px;
+  }
+
+  .story-bleed-copy,
+  .story-bleed-media {
+    grid-column: 1;
+  }
+
+  .story-bleed-media {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* ================================================================
+   2) 職人日常圖庫 ── 「替換圖片」
+   左側大圖搭配說明文字,右側/下方縮圖列可點選切換,
+   切換時大圖用「淡出＋放大再淡入收回」取代單純 opacity 交叉淡化,
+   讓替換這個動作本身帶一點視差般的縱深感;閒置時大圖另外掛
+   data-parallax,捲動時仍有一點輕微位移,呼應網站其餘區塊的視差語彙。
+   ================================================================ */
+.craft-section {
+  overflow: hidden;
+}
+
+.craft-head {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-6);
+}
+
+.craft-head-desc {
+  font-size: 13.5px;
+  color: var(--color-text-soft);
+  margin-top: 14px;
+  max-width: 32em;
+}
+
+.craft-gallery {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .craft-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
+.craft-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.craft-frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-line);
+}
+
+.craft-frame-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.55s ease, transform 0.85s cubic-bezier(.22, .68, 0, 1);
+}
+
+/* 切換圖片瞬間先讓舊圖淡出＋輕微放大位移,新圖片(同一個 <img> 換 src)
+   再從相反方向淡入收回,兩段各半程,加總起來就是「換圖也有視差感」的效果 */
+.craft-frame-img.is-swapping {
+  opacity: 0;
+  transform: scale(1.07) translateY(-10px);
+}
+
+/* 鏤空編號,跟首頁 Products 格線的 counter 數字同一套視覺語彙,
+   由 JS 直接寫入文字內容(這裡不是靠 CSS counter,因為數字要跟著點擊切換) */
+.craft-frame-index {
+  position: absolute;
+  left: 16px;
+  bottom: 10px;
+  font-family: var(--font-display-en);
+  font-weight: 300;
+  font-size: clamp(30px, 4vw, 46px);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.craft-caption {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-line);
+}
+
+.craft-caption-title {
+  font-family: var(--font-display-zh);
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 6px;
+  transition: opacity 0.3s ease;
+}
+
+.craft-caption-desc {
+  font-size: 13px;
+  color: var(--color-text-soft);
+  line-height: 1.85;
+  transition: opacity 0.3s ease;
+}
+
+.craft-caption.is-updating .craft-caption-title,
+.craft-caption.is-updating .craft-caption-desc {
+  opacity: 0;
+}
+
+/* 縮圖列:直式排列在大圖右側(桌機),圖片當背景+疊一層編號,
+   跟大圖的鏤空編號語彙一致,選中的縮圖用底線+邊框標示 */
+.craft-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@media (max-width: 860px) {
+  .craft-thumbs {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+}
+
+.craft-thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+@media (max-width: 860px) {
+  .craft-thumb {
+    width: 160px;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+.craft-thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-text);
+  opacity: 0.36;
+  transition: opacity 0.3s ease;
+}
+
+.craft-thumb:hover::before {
+  opacity: 0.16;
+}
+
+.craft-thumb.is-active {
+  border-color: var(--color-accent);
+}
+
+.craft-thumb.is-active::before {
+  opacity: 0;
+}
+
+.craft-thumb span {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin: 10px 0 0 12px;
+  font-family: var(--font-display-en);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--color-white);
+  transition: opacity 0.3s ease;
+}
+
+.craft-thumb.is-active span {
+  color: var(--color-accent-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .story-bleed-img,
+  .story-bleed-divider,
+  .story-bleed-mark-in,
+  .craft-frame-img {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .story-bleed-img {
+    opacity: 1;
+    transform: none;
+  }
+
+  .story-bleed-divider {
+    transform: scaleX(1);
+  }
+
+  .story-bleed-mark-in {
+    opacity: 0.85;
+    transform: none;
+  }
+}

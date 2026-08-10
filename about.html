@@ -13,6 +13,7 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/about-page.css">
 </head>
 
 <body data-page="about">
@@ -43,6 +44,78 @@
                 </div>
                 <div class="about-quote" aria-hidden="true">
                     <span>一份日常，一份心意。</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 單張出血大圖:店裡的風景,圖片刻意撐出容器右緣,呼應日系雜誌內頁的滿版跨欄手法 -->
+        <section class="section story-section">
+            <div class="story-bleed scroll-reveal">
+                <div class="story-bleed-copy">
+                    <div class="story-label" aria-hidden="true">
+                        <span>02</span>
+                        <span>OUR BAKERY</span>
+                    </div>
+                    <p class="story-bleed-title">從熊本的一間小店開始，<br>用看得見的食材，做每天都想吃的麵包。</p>
+                    <div class="story-bleed-divider" aria-hidden="true"></div>
+                </div>
+                <figure class="story-bleed-media">
+                    <img src="assets/images/hero/hero-01.webp" alt="BREADAY 熊本店內剛出爐陳列的麵包"
+                        class="story-bleed-img" data-parallax="0.06">
+                    <span class="story-bleed-mark" aria-hidden="true">
+                        <span class="story-bleed-mark-in">KUMAMOTO</span>
+                    </span>
+                </figure>
+            </div>
+        </section>
+
+        <!-- 職人日常圖庫:可點選縮圖切換大圖,呈現「送到手上之前」的樣子 -->
+        <section class="section section-alt craft-section">
+            <div class="container">
+                <div class="craft-head scroll-reveal">
+                    <div class="story-label" aria-hidden="true">
+                        <span>03</span>
+                        <span>DAILY CRAFT</span>
+                    </div>
+                    <h2 class="products-title">職人的每一天</h2>
+                    <div class="products-divider" aria-hidden="true"></div>
+                    <p class="craft-head-desc">點選右側的縮圖，看看麵包送到你手上之前，經過了哪些日常。</p>
+                </div>
+
+                <div class="craft-gallery scroll-reveal">
+                    <div class="craft-main" data-parallax="0.04">
+                        <figure class="craft-frame">
+                            <img id="craft-main-img" class="craft-frame-img"
+                                src="assets/images/hero/hero-03.webp" alt="嚴選食材">
+                            <span class="craft-frame-index" id="craft-frame-index">01</span>
+                        </figure>
+                        <div class="craft-caption" id="craft-caption">
+                            <p class="craft-caption-title" id="craft-caption-title">嚴選食材</p>
+                            <p class="craft-caption-desc" id="craft-caption-desc">
+                                只選熊本縣產小麥與看得安心的原料，從選料開始講究。</p>
+                        </div>
+                    </div>
+
+                    <div class="craft-thumbs" role="tablist" aria-label="切換職人日常照片">
+                        <button type="button" class="craft-thumb is-active" role="tab" aria-selected="true"
+                            data-index="01" data-title="嚴選食材" data-desc="只選熊本縣產小麥與看得安心的原料，從選料開始講究。"
+                            data-src="assets/images/hero/hero-03.webp"
+                            style="background-image:url('assets/images/hero/hero-03.webp')">
+                            <span>01 / 食材</span>
+                        </button>
+                        <button type="button" class="craft-thumb" role="tab" aria-selected="false"
+                            data-index="02" data-title="每日烘焙" data-desc="清晨進爐，緊盯著溫度與時間，把握剛剛好出爐的那一刻。"
+                            data-src="assets/images/hero/hero-04.webp"
+                            style="background-image:url('assets/images/hero/hero-04.webp')">
+                            <span>02 / 烘焙</span>
+                        </button>
+                        <button type="button" class="craft-thumb" role="tab" aria-selected="false"
+                            data-index="03" data-title="職人日常" data-desc="一份一份排開，是最平凡也最珍惜的日常風景。"
+                            data-src="assets/images/hero/hero-02.webp"
+                            style="background-image:url('assets/images/hero/hero-02.webp')">
+                            <span>03 / 日常</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
