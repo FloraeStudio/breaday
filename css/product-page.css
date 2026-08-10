@@ -202,40 +202,6 @@
     margin-top: 8px;
 }
 
-.qty-stepper {
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--color-line);
-}
-
-.qty-btn {
-    width: 36px;
-    height: 40px;
-    background: transparent;
-    border: none;
-    font-size: 16px;
-    color: var(--color-text);
-    cursor: pointer;
-    transition: color .25s ease;
-}
-
-.qty-btn:hover {
-    color: var(--color-accent);
-}
-
-.qty-input {
-    width: 44px;
-    height: 40px;
-    text-align: center;
-    border: none;
-    border-left: 1px solid var(--color-line);
-    border-right: 1px solid var(--color-line);
-    font-size: 14px;
-    background: transparent;
-    color: var(--color-text);
-    -moz-appearance: textfield;
-}
-
 .qty-input::-webkit-outer-spin-button,
 .qty-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -265,41 +231,28 @@
 .pd-feedback-success {
     display: inline-flex;
     align-items: center;
-    gap: 14px;
+    gap: 8px;
     font-size: 13px;
     color: var(--color-text);
-}
-
-.pd-feedback-line {
-    width: 16px;
-    height: 1px;
-    background: var(--color-accent);
-    transform: scaleX(0);
-    transform-origin: left center;
-    animation: pd-line-grow .45s cubic-bezier(.22, .68, 0, 1) forwards;
-}
-
-.pd-feedback-text {
-    display: inline-block;
-    letter-spacing: 0.15em;
     opacity: 0;
-    animation: pd-text-in .5s ease .2s forwards;
+    transform: translateY(4px);
+    animation: pd-feedback-in .5s ease forwards;
+}
+
+.pd-feedback-sep {
+    color: var(--color-text-soft);
+}
+
+@keyframes pd-feedback-in {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .pd-feedback-error {
     font-size: 13px;
     color: var(--color-text-soft);
-}
-
-@keyframes pd-line-grow {
-    to { transform: scaleX(1); }
-}
-
-@keyframes pd-text-in {
-    to {
-        opacity: 1;
-        letter-spacing: 0.02em;
-    }
 }
 
 .pd-checkout-link {
@@ -355,8 +308,13 @@
     }
 
     .option-swatch,
-    .qty-btn,
     .pd-checkout-link {
         transition: none;
+    }
+
+    .pd-feedback-success {
+        animation: none;
+        opacity: 1;
+        transform: none;
     }
 }

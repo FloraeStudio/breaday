@@ -136,3 +136,46 @@ export function renderProductNotFound(container) {
     </div>
   `;
 }
+
+// ---------- 購物車頁(cart.html) ----------
+// 輸入資料格式:cart-service.js 的 formatCart() 回傳的
+// { id, checkoutUrl, subtotal, total, currency, lines:[{lineId, quantity, variantId, name, variantTitle, price, image}] }
+export function renderCartEmpty(container) {
+  container.innerHTML = `
+    <div class="cart-empty scroll-reveal">
+      <p class="cart-empty-text">購物車目前是空的。</p>
+      <a href="products.html" class="btn btn-accent">去看看商品 →</a>
+    </div>
+  `;
+}
+
+export function renderCart(container, cart) {
+  const rowsHtml = cart.lines.map((line) => `
+    <li class="cart-row" data-line-id="${line.lineId}">
+      <span class="cart-row-media"${line.image ? ` style="background-image:url('${line.image}')"` : ''}></span>
+      <span class="cart-row-info">
+        <span class="cart-row-name">${line.name}</span>
+        ${line.variantTitle && line.variantTitle !== 'Default Title' ? `<span class="cart-row-variant">${line.variantTitle}</span>` : ''}
+        <button type="button" class="cart-row-remove" data-line-id="${line.lineId}">移除</button>
+      </span>
+      <span class="qty-stepper">
+        <button type="button" class="qty-btn" data-action="dec" data-line-id="${line.lineId}" aria-label="減少數量">−</button>
+        <input type="number" class="qty-input cart-qty-input" data-line-id="${line.lineId}" value="${line.quantity}" min="1" inputmode="numeric">
+        <button type="button" class="qty-btn" data-action="inc" data-line-id="${line.lineId}" aria-label="增加數量">＋</button>
+      </span>
+      <span class="cart-row-price">${renderPriceHtml(line.price, null)}</span>
+    </li>
+  `).join('');
+
+  container.innerHTML = `
+    <ul class="cart-list">${rowsHtml}</ul>
+    <div class="cart-summary scroll-reveal">
+      <div class="cart-summary-row">
+        <span>小計</span>
+        <span>${formatPrice(cart.subtotal)}</span>
+      </div>
+      <p class="cart-summary-note">運費與稅金將於結帳頁面計算。</p>
+      <a href="${cart.checkoutUrl}" class="btn btn-accent cart-checkout-btn">前往結帳 →</a>
+    </div>
+  `;
+}

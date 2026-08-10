@@ -1,8 +1,8 @@
 
 import { getProducts, getProductByHandle } from './data-service.js';
-import { renderProducts, renderProductList, renderProductDetail, renderProductNotFound, renderPriceHtml } from './render.js';
+import { renderProducts, renderProductList, renderProductDetail, renderProductNotFound, renderPriceHtml, renderCart, renderCartEmpty } from './render.js';
 import { loadLayout } from './partials.js';
-import { addToCart } from './cart-service.js';
+import { getOrCreateCart, addToCart, updateCartLine, removeFromCart } from './cart-service.js';
 
 // ---------- 產品渲染 ----------
 // #product-grid:所有商品頁(products.html)的完整格線
@@ -213,12 +213,13 @@ async function initProductDetail() {
         if (feedbackEl) {
           feedbackEl.innerHTML = `
           <span class="pd-feedback-success">
-            <span class="pd-feedback-line" aria-hidden="true"></span>
-            <span class="pd-feedback-text">已加入購物車</span>
+            <span>已加入購物車</span>
+            <span class="pd-feedback-sep" aria-hidden="true">・</span>
             <a href="${cart.checkoutUrl}" class="pd-checkout-link">前往結帳 →</a>
           </span>
         `;
         }
+        renderCartCount(cart);
       } catch (err) {
         console.error('加入購物車失敗:', err);
         if (feedbackEl) feedbackEl.innerHTML = `<span class="pd-feedback-error">加入購物車失敗，請稍後再試一次。</span>`;
@@ -244,6 +245,94 @@ async function initProductDetail() {
       console.error('讀取相關商品失敗:', err);
       if (relatedSection) relatedSection.hidden = true;
     }
+  }
+}
+
+// ---------- 購物車頁(cart.html) ----------
+async function initCartPage() {
+  const cartBody = document.getElementById('cart-body');
+  if (!cartBody) return;
+
+  const renderCurrentCart = async () => {
+    let cart;
+    try {
+      cart = await getOrCreateCart();
+    } catch (err) {
+      console.error('讀取購物車失敗:', err);
+      cartBody.innerHTML = `<p class="cart-empty-text">購物車讀取失敗，請重新整理再試一次。</p>`;
+      return;
+    }
+
+    if (!cart.lines.length) {
+      renderCartEmpty(cartBody);
+      renderCartCount(cart);
+      return;
+    }
+
+    renderCart(cartBody, cart);
+    renderCartCount(cart);
+    initScrollReveal();
+    bindCartRowEvents();
+  };
+
+  function bindCartRowEvents() {
+    cartBody.querySelectorAll('.qty-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const { lineId, action } = btn.dataset;
+        const input = cartBody.querySelector(`.cart-qty-input[data-line-id="${lineId}"]`);
+        const current = parseInt(input.value, 10) || 1;
+        const next = action === 'inc' ? current + 1 : Math.max(1, current - 1);
+        try {
+          await updateCartLine(lineId, next);
+        } catch (err) {
+          console.error('更新購物車數量失敗:', err);
+        }
+        renderCurrentCart();
+      });
+    });
+
+    cartBody.querySelectorAll('.cart-qty-input').forEach((input) => {
+      input.addEventListener('change', async () => {
+        const { lineId } = input.dataset;
+        const next = Math.max(1, parseInt(input.value, 10) || 1);
+        try {
+          await updateCartLine(lineId, next);
+        } catch (err) {
+          console.error('更新購物車數量失敗:', err);
+        }
+        renderCurrentCart();
+      });
+    });
+
+    cartBody.querySelectorAll('.cart-row-remove').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        try {
+          await removeFromCart(btn.dataset.lineId);
+        } catch (err) {
+          console.error('刪除購物車項目失敗:', err);
+        }
+        renderCurrentCart();
+      });
+    });
+  }
+
+  await renderCurrentCart();
+}
+
+// ---------- 購物車數量徽章(header,所有頁面共用) ----------
+function renderCartCount(cart) {
+  const badge = document.getElementById('cart-count');
+  if (!badge) return;
+  const count = cart.lines.reduce((sum, line) => sum + line.quantity, 0);
+  badge.textContent = count > 0 ? `(${count})` : '';
+  badge.hidden = count === 0;
+}
+
+async function initCartCount() {
+  try {
+    renderCartCount(await getOrCreateCart());
+  } catch (err) {
+    console.error('讀取購物車數量失敗:', err);
   }
 }
 
@@ -414,6 +503,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initHeroSlideshow();   // hero 圖片：輪播 + 捲動視差
   await initProducts();  // 產品卡先插入 DOM
   await initProductDetail(); // 商品詳情頁(product.html)：只有存在 #product-detail 時才會動作
+  await initCartPage();
   initScrollReveal();    // 再統一掛上滾動淡入觀察者(含剛插入的產品卡/商品詳情內容)
   initParallax();        // About 圖片、精選商品第一張圖的輕微視差
 });

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>購物車 | BREADAY 台灣</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Noto+Serif+TC:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/cart-page.css">
+</head>
+
+<body data-page="cart">
+
+    <header id="site-header"></header>
+
+    <main>
+        <section class="section cart-page" id="cart">
+            <div class="container">
+                <nav class="breadcrumb" aria-label="breadcrumb">
+                    <ol>
+                        <li><a href="index.html">首頁</a></li>
+                        <li>購物車</li>
+                    </ol>
+                </nav>
+
+                <div class="cart-head scroll-reveal">
+                    <div class="cart-kicker"><span>CART</span></div>
+                    <h1 class="cart-title">購物車</h1>
+                </div>
+
+                <div id="cart-body">
+                    <!-- 由 js/main.js 動態產生:商品清單 + 小計，或空購物車狀態 -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>

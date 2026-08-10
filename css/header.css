@@ -58,6 +58,12 @@ nav a.is-active::after {
   width: 100%;
 }
 
+.cart-count {
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--color-accent);
+}
+
 @media (max-width:640px) {
   nav ul {
     gap: 18px;
