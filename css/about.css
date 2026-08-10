@@ -68,8 +68,10 @@
 
 .story-block-media {
   position: relative;
-  aspect-ratio: 21 / 9;
+  max-width: 460px;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
+  margin-left: auto;
 }
 
 @media (max-width:640px) {
