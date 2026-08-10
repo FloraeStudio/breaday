@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品詳情 | BREADAY 台灣</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Noto+Serif+TC:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/product-page.css">
+</head>
+
+<body data-page="products">
+
+    <header id="site-header"></header>
+
+    <main>
+        <section class="section product-detail-page" id="product-detail-page">
+            <div class="container">
+                <nav class="breadcrumb" aria-label="breadcrumb">
+                    <ol>
+                        <li><a href="index.html">首頁</a></li>
+                        <li><a href="products.html">所有商品</a></li>
+                        <li id="breadcrumb-current">商品詳情</li>
+                    </ol>
+                </nav>
+
+                <div class="product-detail" id="product-detail">
+                    <p class="product-detail-loading">正在讀取商品資訊...</p>
+                    <!-- 由 js/render.js 的 renderProductDetail() / renderProductNotFound() 動態產生 -->
+                </div>
+
+                <section class="product-related" id="product-related" aria-label="你可能也喜歡">
+                    <div class="products-head scroll-reveal">
+                        <div class="section-index" aria-hidden="true">
+                            <span>MORE</span>
+                            <span>RECOMMEND</span>
+                        </div>
+                        <div class="products-head-text">
+                            <h2 class="products-title">你可能也喜歡</h2>
+                            <div class="products-divider" aria-hidden="true"></div>
+                        </div>
+                    </div>
+
+                    <div class="products-grid" id="related-grid">
+                        <!-- 由 js/main.js 透過 data-service.js 動態產生 -->
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>

@@ -10,6 +10,7 @@ const QUERY = `
       edges {
         node {
           id
+          handle
           title
           tags
           priceRange { minVariantPrice { amount } }
@@ -35,9 +36,79 @@ export async function getProducts() {
   // 轉換成 render.js 原本吃的格式，維持介面不變
   return data.products.edges.map(({ node }) => ({
     id: node.id,
+    handle: node.handle,
     tag: node.tags?.[0] ?? '',
     name: node.title,
     price: node.priceRange.minVariantPrice.amount,
     image: node.featuredImage?.url ?? '',
   }));
+}
+
+// ★ 商品詳情頁專用：用 handle（網址上的 slug）查單一商品完整資料，
+//   包含多張圖片、完整描述、以及所有變體(variants，例如口味/尺寸)。
+//   variants 才有 addToCart 需要的 merchandiseId，商品列表拿到的 id 不能直接拿去加入購物車。
+const PRODUCT_QUERY = `
+  query getProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      id
+      handle
+      title
+      description
+      tags
+      images(first: 8) {
+        edges { node { url altText } }
+      }
+      options { name values }
+      variants(first: 20) {
+        edges {
+          node {
+            id
+            title
+            availableForSale
+            price { amount }
+            selectedOptions { name value }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export async function getProductByHandle(handle) {
+  const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/${API_VERSION}/graphql.json`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN,
+    },
+    body: JSON.stringify({ query: PRODUCT_QUERY, variables: { handle } }),
+  });
+
+  const { data } = await res.json();
+  const node = data?.product;
+  if (!node) return null; // handle 不存在或商品已下架
+
+  const images = node.images.edges.map(({ node: img }) => ({
+    url: img.url,
+    alt: img.altText || node.title,
+  }));
+
+  const variants = node.variants.edges.map(({ node: v }) => ({
+    id: v.id,
+    title: v.title,
+    available: v.availableForSale,
+    price: v.price.amount,
+    options: v.selectedOptions, // [{ name, value }]
+  }));
+
+  return {
+    id: node.id,
+    handle: node.handle,
+    name: node.title,
+    tag: node.tags?.[0] ?? '',
+    description: node.description || '',
+    images,
+    options: node.options, // [{ name, values: [...] }]
+    variants,
+  };
 }
