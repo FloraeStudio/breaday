@@ -26,15 +26,15 @@
 }
 
 /* ================================================================
-   1) 故事區塊 ── 兩欄圖文，收在 .container 裡不出血，
-   圖片刻意縮小、留大量空白，底下配一行圖說，
-   靠留白跟排版比例做精緻感，不靠圖片尺寸搶戲。
+   1) 故事區塊 ── 照片像裱框收好的印刷品，段落首字放大，
+   兩段刻意上下錯位，靠這幾個編輯排版的細節做文青感，
+   不靠圖片尺寸或滿版視覺搶戲。
    ================================================================ */
 .story-block {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 72px;
-  align-items: center;
+  grid-template-columns: 1.2fr minmax(260px, 340px);
+  gap: 80px;
+  align-items: start;
 }
 
 .story-block--reverse .story-block-copy {
@@ -43,6 +43,7 @@
 
 .story-block--reverse .story-block-media {
   order: 1;
+  margin-top: 64px;
 }
 
 .story-block-title {
@@ -54,11 +55,22 @@
 }
 
 .story-block-text {
-  margin-top: 20px;
+  margin-top: 22px;
   font-size: 13.5px;
-  line-height: 2;
+  line-height: 2.05;
   color: var(--color-text-soft);
   max-width: 32em;
+}
+
+/* 首字放大：雜誌內文常見的編輯排版手法 */
+.story-block-text::first-letter {
+  font-family: var(--font-display-zh);
+  font-size: 2.5em;
+  font-weight: 500;
+  color: var(--color-accent);
+  float: left;
+  line-height: 0.75;
+  margin: 6px 8px 0 0;
 }
 
 .story-block-divider {
@@ -66,7 +78,7 @@
   height: 1px;
   background: var(--color-accent);
   opacity: 0.6;
-  margin-top: 30px;
+  margin-top: 32px;
   transform-origin: left center;
   transform: scaleX(0);
   transition: transform 0.8s cubic-bezier(.22, .68, 0, 1);
@@ -77,8 +89,23 @@
   transform: scaleX(1);
 }
 
+/* 照片像裱框收好的印刷品：細框線 + 內距，跟原圖之間留一圈呼吸空間 */
 .story-block-media {
   position: relative;
+}
+
+.story-block-frame-label {
+  display: block;
+  font-family: var(--font-display-en);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--color-accent);
+  margin-bottom: 14px;
+}
+
+.story-block-frame {
+  border: 1px solid var(--color-line);
+  padding: 12px;
 }
 
 .story-block-parallax {
@@ -104,36 +131,12 @@
   transform: scale(1);
 }
 
-.story-block-mark {
-  position: absolute;
-  right: 16px;
-  bottom: 14px;
-  font-family: var(--font-display-en);
-  font-weight: 300;
-  font-size: clamp(20px, 3vw, 34px);
-  letter-spacing: 0.06em;
-  color: transparent;
-  -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.85);
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  user-select: none;
-  z-index: 1;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 1s cubic-bezier(.22, .68, 0, 1), transform 1s cubic-bezier(.22, .68, 0, 1);
-  transition-delay: 0.6s;
-}
-
-.story-block.is-visible .story-block-mark {
-  opacity: 0.85;
-  transform: translateY(0);
-}
-
 .story-block-caption {
   margin-top: 14px;
   font-size: 11px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   color: var(--color-text-soft);
+  text-align: right;
 }
 
 @media (max-width:860px) {
@@ -145,6 +148,7 @@
   .story-block--reverse .story-block-copy,
   .story-block--reverse .story-block-media {
     order: 0;
+    margin-top: 0;
   }
 }
 
@@ -400,10 +404,5 @@
 
   .story-block-divider {
     transform: scaleX(1);
-  }
-
-  .story-block-mark {
-    opacity: 0.85;
-    transform: none;
   }
 }
