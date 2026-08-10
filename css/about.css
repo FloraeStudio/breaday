@@ -2,30 +2,6 @@
    只有 about.html 會用到,所以獨立成頁面專屬檔案,不放進跨頁共用的 sections.css,
    跟 product-page.css / products-page.css / cart-page.css 走同一套慣例。 */
 
-/* ---------- 品牌小語(日文原文標語)----------
-   客戶提供的日文原始標語,放在 H1 正下方當作一句安靜的簽名,
-   字級刻意壓低、不搶標題,呼應日系品牌常見的「原文小字註記」排法 */
-.about-motto {
-  margin-top: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.about-motto-jp,
-.about-motto-note {
-  display: block;
-  font-family: var(--font-body);
-  font-size: 12.5px;
-  letter-spacing: 0.03em;
-  color: var(--color-text-soft);
-  font-style: italic;
-}
-
-.about-motto-jp {
-  color: var(--color-accent);
-}
-
 /* ---------- 共用:小標籤(水平),獨立頁面版的「編號小標」----------
    about.html 是獨立頁面,不用首頁單頁滾動專用的直排 .section-index,
    改用比 .page-kicker 再輕一階、可以重複出現在同一頁多個區塊的水平標籤 */
@@ -62,9 +38,7 @@
 .story-bleed {
   display: grid;
   grid-template-columns:
-    minmax(24px, calc((100vw - var(--container-w)) / 2 + 32px))
-    minmax(240px, 400px)
-    1fr;
+    minmax(24px, calc((100vw - var(--container-w)) / 2 + 32px)) minmax(240px, 400px) 1fr;
   align-items: start;
   padding-top: 24px;
   column-gap: 48px;
@@ -111,6 +85,20 @@
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
+}
+
+/* 鏡射版本:圖片改從左側出血，文字放右邊，跟第一段交錯呼吸 */
+.story-bleed--reverse {
+  grid-template-columns:
+    1fr minmax(240px, 400px) minmax(24px, calc((100vw - var(--container-w)) / 2 + 32px));
+}
+
+.story-bleed--reverse .story-bleed-media {
+  grid-column: 1;
+}
+
+.story-bleed--reverse .story-bleed-copy {
+  grid-column: 2;
 }
 
 @media (min-width: 861px) {
@@ -223,8 +211,8 @@
 
 .craft-gallery {
   display: grid;
-  grid-template-columns: 2.6fr 1fr;
-  gap: 32px;
+  grid-template-columns: 1fr 200px;
+  gap: 28px;
   align-items: start;
 }
 
