@@ -1,5 +1,20 @@
 // 純畫面渲染，不碰資料來源。輸入資料格式固定為 { id, handle, tag, name, price, image }
 // 大圖片、不規則格線（不對稱 bento），不做視差
+
+function formatPrice(price) {
+  return `NT$ ${Math.round(Number(price)).toLocaleString('zh-Hant-TW')}`;
+}
+
+export function renderPriceHtml(price, compareAtPrice) {
+  const onSale = compareAtPrice && Number(compareAtPrice) > Number(price);
+  if (!onSale) return `<span class="price-sale">${formatPrice(price)}</span>`;
+  return `<span class="price-group">
+      <span class="price-original">${formatPrice(compareAtPrice)}</span>
+      <span class="price-sale">${formatPrice(price)}</span>
+      <span class="price-badge">特惠</span>
+    </span>`;
+}
+
 export function renderProducts(container, products) {
   container.innerHTML = products.map((p, index) => `
     <a href="product.html?handle=${encodeURIComponent(p.handle)}" class="product-card scroll-reveal" data-id="${p.id}" style="--i:${index}">
@@ -8,7 +23,7 @@ export function renderProducts(container, products) {
         ${p.tag ? `<span class="product-tag">${p.tag}</span>` : ''}
       </div>
       <div class="product-name">${p.name}</div>
-      <div class="product-price">NT$ ${p.price}</div>
+      <div class="product-price">${renderPriceHtml(p.price, p.compareAtPrice)}</div>
     </a>
   `).join('');
 }
@@ -22,7 +37,7 @@ export function renderProductList(container, products) {
           <span class="product-row-name">${p.name}</span>
           ${p.tag ? `<span class="product-row-tag">${p.tag}</span>` : ''}
         </span>
-        <span class="product-row-price">NT$ ${p.price}</span>
+        <span class="product-row-price">${renderPriceHtml(p.price, p.compareAtPrice)}</span>
       </a>
     </li>
   `).join('');
@@ -67,8 +82,8 @@ export function renderProductDetail(container, product) {
         <div class="product-gallery-main">
           <div class="product-gallery-mark" aria-hidden="true">BREADAY</div>
           ${mainImage
-            ? `<img class="product-gallery-img" id="pd-main-img" src="${mainImage.url}" alt="${mainImage.alt}">`
-            : `<div class="product-gallery-img product-gallery-img-placeholder" id="pd-main-img"></div>`}
+      ? `<img class="product-gallery-img" id="pd-main-img" src="${mainImage.url}" alt="${mainImage.alt}">`
+      : `<div class="product-gallery-img product-gallery-img-placeholder" id="pd-main-img"></div>`}
         </div>
         ${product.images.length > 1 ? `<div class="product-gallery-thumbs">${thumbsHtml}</div>` : ''}
       </div>
@@ -83,7 +98,7 @@ export function renderProductDetail(container, product) {
           ${product.tag ? `<div class="product-info-tag">${product.tag}</div>` : ''}
           <h1 class="product-info-title">${product.name}</h1>
           <div class="product-info-divider" aria-hidden="true"></div>
-          <div class="product-info-price" id="pd-price">NT$ ${product.variants[0]?.price ?? ''}</div>
+          <div class="product-info-price" id="pd-price">${product.variants[0] ? renderPriceHtml(product.variants[0].price, product.variants[0].compareAtPrice) : ''}</div>
 
           ${product.description ? `<p class="product-info-desc">${product.description}</p>` : ''}
 

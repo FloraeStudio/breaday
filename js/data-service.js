@@ -15,6 +15,7 @@ const QUERY = `
           tags
           productType
           priceRange { minVariantPrice { amount } }
+          compareAtPriceRange { minVariantPrice { amount } }
           featuredImage { url }
         }
       }
@@ -44,6 +45,7 @@ export async function getProducts() {
     category: node.productType || '麵包',
     name: node.title,
     price: node.priceRange.minVariantPrice.amount,
+    compareAtPrice: node.compareAtPriceRange?.minVariantPrice?.amount ?? null,
     image: node.featuredImage?.url ?? '',
   }));
 }
@@ -70,6 +72,7 @@ const PRODUCT_QUERY = `
             title
             availableForSale
             price { amount }
+            compareAtPrice { amount }
             selectedOptions { name value }
           }
         }
@@ -102,6 +105,7 @@ export async function getProductByHandle(handle) {
     title: v.title,
     available: v.availableForSale,
     price: v.price.amount,
+    compareAtPrice: v.compareAtPrice?.amount ?? null,
     options: v.selectedOptions, // [{ name, value }]
   }));
 

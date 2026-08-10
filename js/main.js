@@ -1,5 +1,6 @@
+
 import { getProducts, getProductByHandle } from './data-service.js';
-import { renderProducts, renderProductList, renderProductDetail, renderProductNotFound } from './render.js';
+import { renderProducts, renderProductList, renderProductDetail, renderProductNotFound, renderPriceHtml } from './render.js';
 import { loadLayout } from './partials.js';
 import { addToCart } from './cart-service.js';
 
@@ -146,7 +147,7 @@ async function initProductDetail() {
       }
       return;
     }
-    if (priceEl) priceEl.textContent = `NT$ ${variant.price}`;
+    if (priceEl) priceEl.innerHTML = renderPriceHtml(variant.price, variant.compareAtPrice);
     if (addBtn) {
       addBtn.disabled = !variant.available;
       addBtn.textContent = variant.available ? '加入購物車' : '已售完';
