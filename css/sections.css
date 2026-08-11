@@ -981,10 +981,13 @@
 
 .contact-map-frame {
     position: relative;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 11;
+    /* 原本 4/3，改跟 craft-frame 的 16/10 呼應 */
     overflow: hidden;
     background: var(--color-line);
-    border: 1px solid var(--color-line);
+    border: none;
+    box-shadow: 0 10px 30px rgba(37, 37, 37, 0.1);
+    /* 用陰影取代邊框,做出「浮起」的照片感 */
 }
 
 .contact-map-frame iframe {
@@ -992,26 +995,18 @@
     width: 100%;
     height: 100%;
     border: 0;
-    /* 把 Google 地圖預設的飽和藍/紅拉回網站的暖調色階，
-       避免地圖看起來像貼上去的外部元件 */
-    filter: grayscale(20%) sepia(10%) saturate(0.85) contrast(0.96) brightness(1.03);
+    filter: grayscale(65%) sepia(14%) saturate(0.55) contrast(0.94) brightness(1.06);
 }
 
-.contact-map-badge {
-    position: absolute;
-    left: 14px;
-    top: 14px;
+.contact-map-eyebrow {
     font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--color-white);
-    background: rgba(37, 37, 37, 0.55);
-    padding: 6px 10px;
-    pointer-events: none;
-    z-index: 2;
+    letter-spacing: 0.25em;
+    color: var(--color-accent);
+    margin-bottom: 14px;
 }
 
 .contact-map-caption {
-    margin-top: 16px;
+    margin-top: 22px;
     font-size: 12.5px;
     line-height: 1.75;
     color: var(--color-text-soft);
