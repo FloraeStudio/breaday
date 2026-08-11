@@ -113,13 +113,6 @@
   transform: scale(1);
 }
 
-.story-block-caption {
-  margin-top: 16px;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--color-text-soft);
-}
-
 @media (max-width:960px) {
   .story-block {
     grid-template-columns: 1fr;
