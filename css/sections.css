@@ -435,6 +435,8 @@
 
 @media (max-width:860px) {
     .about-text {
+        flex-direction: column;
+        align-items: stretch;
         padding-left: 20px;
         padding-right: 20px;
     }
@@ -631,6 +633,15 @@
     align-items: flex-end;
     gap: 28px;
     margin-bottom: 56px;
+}
+
+@media (max-width:860px) {
+    .products-head {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+        margin-bottom: 40px;
+    }
 }
 
 .products-head-text {
