@@ -72,13 +72,13 @@ header {
   letter-spacing: 0.14em;
 }
 
-nav ul {
+#site-nav ul {
   list-style: none;
   display: flex;
   gap: 36px;
 }
 
-nav a {
+#site-nav a {
   font-size: 14px;
   letter-spacing: 0.05em;
   color: var(--color-text-soft);
@@ -86,7 +86,7 @@ nav a {
   padding-bottom: 4px;
 }
 
-nav a::after {
+#site-nav a::after {
   content: '';
   position: absolute;
   left: 0;
@@ -97,13 +97,13 @@ nav a::after {
   transition: width .25s ease;
 }
 
-nav a:hover::after {
+#site-nav a:hover::after {
   width: 100%;
 }
 
 /* 目前所在頁面:固定顯示底線(不是 hover 觸發,也不是循環動畫),
    讓使用者在多頁站台裡隨時知道自己在哪一頁 */
-nav a.is-active::after {
+#site-nav a.is-active::after {
   width: 100%;
 }
 
@@ -123,7 +123,7 @@ nav a.is-active::after {
     display: flex;
   }
 
-  nav {
+  #site-nav {
     position: absolute;
     top: 100%;
     left: 0;
@@ -135,35 +135,35 @@ nav a.is-active::after {
     transition: max-height .35s cubic-bezier(.22, .68, 0, 1);
   }
 
-  nav.is-open {
+  #site-nav.is-open {
     max-height: 320px;
   }
 
-  nav ul {
+  #site-nav ul {
     flex-direction: column;
     gap: 0;
     padding: 4px 20px 20px;
   }
 
-  nav li {
+  #site-nav li {
     border-top: 1px solid var(--color-line);
   }
 
-  nav li:first-child {
+  #site-nav li:first-child {
     border-top: 0;
   }
 
-  nav a {
+  #site-nav a {
     display: block;
     padding: 14px 0;
     font-size: 13px;
   }
 
-  nav a::after {
+  #site-nav a::after {
     display: none;
   }
 
-  nav a.is-active {
+  #site-nav a.is-active {
     color: var(--color-accent);
   }
 }
