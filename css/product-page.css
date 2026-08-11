@@ -109,15 +109,9 @@
 
 .product-gallery-thumbs {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin-top: 14px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-}
-
-.product-gallery-thumbs::-webkit-scrollbar {
-    display: none;
 }
 
 .product-thumb {
