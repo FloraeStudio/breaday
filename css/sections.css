@@ -929,6 +929,11 @@
     gap: 56px;
 }
 
+.contact-grid.is-visible .contact-desc {
+    opacity: 1;
+    transform: none;
+}
+
 @media (max-width:860px) {
     .contact-grid {
         flex-direction: column;
