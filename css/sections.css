@@ -887,20 +887,21 @@
 
 .contact-grid {
     display: flex;
-    align-items: flex-end;
-    gap: 40px;
+    align-items: flex-start;
+    gap: 56px;
 }
 
 @media (max-width:860px) {
     .contact-grid {
         flex-direction: column;
         align-items: flex-start;
-        gap: 20px;
+        gap: 40px;
     }
 }
 
 .contact-body {
     flex: 1;
+    padding-top: var(--space-1);
 }
 
 .contact-title {
@@ -956,6 +957,89 @@
     transform: none;
 }
 
+/* 地圖區塊,跟左側文字同一套「捲到才淡入上移」語彙，delay 排在最後，
+   讓視線先落在文字上再看到地圖 */
+.contact-map {
+    width: 380px;
+    flex-shrink: 0;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .7s cubic-bezier(.22, .68, 0, 1) .55s,
+        transform .7s cubic-bezier(.22, .68, 0, 1) .55s;
+}
+
+.contact-grid.is-visible .contact-map {
+    opacity: 1;
+    transform: none;
+}
+
+@media (max-width:860px) {
+    .contact-map {
+        width: 100%;
+    }
+}
+
+.contact-map-frame {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+}
+
+.contact-map-frame iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    /* 把 Google 地圖預設的飽和藍/紅拉回網站的暖調色階，
+       避免地圖看起來像貼上去的外部元件 */
+    filter: grayscale(20%) sepia(10%) saturate(0.85) contrast(0.96) brightness(1.03);
+}
+
+.contact-map-badge {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--color-white);
+    background: rgba(37, 37, 37, 0.55);
+    padding: 6px 10px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.contact-map-caption {
+    margin-top: 16px;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--color-text-soft);
+}
+
+.contact-map-caption strong {
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.contact-map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 11.5px;
+    letter-spacing: 0.15em;
+    color: var(--color-accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s ease, color .3s ease;
+}
+
+.contact-map-link:hover,
+.contact-map-link:focus-visible {
+    border-color: var(--color-accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .contact-divider {
         transition: none;
@@ -963,7 +1047,8 @@
     }
 
     .contact-desc,
-    .contact-btn {
+    .contact-btn,
+    .contact-map {
         opacity: 1;
         transform: none;
         transition: letter-spacing .35s ease, border-color .35s ease, color .35s ease, outline-color .35s ease, outline-offset .35s ease;
