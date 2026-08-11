@@ -5,6 +5,11 @@
 /* ---------- 共用:小標籤(水平),獨立頁面版的「編號小標」----------
    about.html 是獨立頁面,不用首頁單頁滾動專用的直排 .section-index,
    改用比 .page-kicker 再輕一階、可以重複出現在同一頁多個區塊的水平標籤 */
+
+.about-section {
+  padding-top: var(--space-8);
+}
+
 .story-label {
   display: flex;
   align-items: center;

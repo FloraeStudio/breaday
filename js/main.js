@@ -476,7 +476,7 @@ function initScrollReveal() {
         }
       });
     },
-    { threshold: 0, rootMargin: '0px 0px 20% 0px' }
+    { threshold: 0, rootMargin: '0px 0px 5% 0px' }
   );
   targets.forEach((el) => observer.observe(el));
 }
