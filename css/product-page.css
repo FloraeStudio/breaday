@@ -37,6 +37,27 @@
         flex-direction: column;
         gap: 0;
     }
+
+    .product-gallery-mark {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    .product-thumb {
+        width: 72px;
+        height: 72px;
+    }
+
+    /* 手機版數量選擇器 + 加入購物車改成同一列滿版,不讓按鈕擠成一小塊、
+       跟數量選擇器比例失衡 */
+    .product-qty-row {
+        flex-wrap: nowrap;
+    }
+
+    .product-add-btn {
+        flex: 1;
+        justify-content: center;
+    }
 }
 
 /* ---------- 圖片區 ---------- */
@@ -56,19 +77,24 @@
 }
 
 /* 跟 hero-media-mark 同一套鏤空字語彙,固定顯示品牌名,呼應 hero 右下角的
-   簽名構圖邏輯,尺寸刻意壓小,只當一個安靜的落款,不搶商品圖的注意力 */
+   簽名構圖邏輯,尺寸刻意壓小,只當一個安靜的落款,不搶商品圖的注意力。
+   改用半透明深色底 + 實色白字(不用 mix-blend-mode:overlay),
+   這樣不管商品照片本身顏色深淺、亮暗,落款都維持一致的可讀性 */
 .product-gallery-mark {
     position: absolute;
-    right: 16px;
+    right: 14px;
     bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    background: rgba(37, 37, 37, 0.42);
+    backdrop-filter: blur(2px);
     font-family: var(--font-display-en);
     font-weight: 300;
-    font-size: clamp(13px, 1.4vw, 16px);
+    font-size: clamp(11px, 1.2vw, 13px);
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.75);
-    mix-blend-mode: overlay;
+    color: rgba(255, 255, 255, 0.92);
     pointer-events: none;
     z-index: 1;
     animation: breathe 5s ease-in-out infinite;
@@ -77,9 +103,15 @@
 
 .product-gallery-thumbs {
     display: flex;
-    flex-wrap: wrap;
     gap: 10px;
     margin-top: 14px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.product-gallery-thumbs::-webkit-scrollbar {
+    display: none;
 }
 
 .product-thumb {
