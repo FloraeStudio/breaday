@@ -180,7 +180,7 @@ async function initProductDetail() {
         if (mainImg.tagName === 'IMG') mainImg.src = thumb.dataset.src;
         else mainImg.style.backgroundImage = `url('${thumb.dataset.src}')`;
         mainImg.style.opacity = '1';
-      }, 220);
+      }, 300);
     });
   });
 
@@ -370,7 +370,7 @@ function initCraftGallery() {
     window.setTimeout(() => {
       mainImg.src = images[current];
       mainImg.classList.remove('is-swapping');
-    }, 220);
+    }, 300);
     dotsWrap.querySelectorAll('.craft-dot').forEach((dot, i) => {
       dot.classList.toggle('is-active', i === current);
     });
