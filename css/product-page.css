@@ -211,6 +211,14 @@
 .product-add-btn {
     padding: 12px 22px;
     border: 1px solid var(--color-accent);
+    background-color: var(--color-accent);
+    color: #FFFFFF;
+}
+
+.product-add-btn:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #FFFFFF;
 }
 
 .product-add-btn:disabled {
@@ -220,7 +228,8 @@
 
 .product-add-btn:disabled:hover {
     letter-spacing: 0.3em;
-    color: var(--color-accent);
+    background-color: var(--color-accent);
+    color: #FFFFFF;
 }
 
 .product-info-feedback {

@@ -454,6 +454,14 @@ function initCharReveal() {
   document.querySelectorAll('.char-reveal').forEach((el) => splitIntoChars(el));
 }
 
+// 跟 initCharReveal 一樣拆字，但這組給「捲動才觸發」用：
+// 拆字動作在頁面載入時就先做好（.char span 建立時預設 animation-play-state: paused，
+// 详見 sections.css），實際播放靠 CSS 的 .is-visible .char-reveal-scroll .char 規則觸發，
+// 不需要額外的 JS 監聽，跟外層 .scroll-reveal 共用同一個 IntersectionObserver 的觸發時機
+function initScrollCharReveal() {
+  document.querySelectorAll('.char-reveal-scroll').forEach((el) => splitIntoChars(el));
+}
+
 // ---------- 滾動淡入 ----------
 // rootMargin 給下緣一個「正值」,等於把偵測範圍往下延伸超出實際畫面,
 // 元素還沒真的滑進視窗、離可視範圍還有一小段距離時就先觸發動畫,
@@ -625,6 +633,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initSmoothScroll();
   await safeInit(loadLayout, 'loadLayout');
   initCharReveal();
+  initScrollCharReveal();
   initHeroSlideshow();
   await safeInit(initProducts, 'initProducts');
   await safeInit(initProductDetail, 'initProductDetail');

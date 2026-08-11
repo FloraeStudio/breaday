@@ -281,6 +281,23 @@
     }
 }
 
+/* 跟上面 .char-reveal 同一套逐字語彙，差別是「捲動到才觸發」而不是一開頁就跑：
+   .char 預設 animation-play-state: paused（animation-delay 也不會在暫停時消耗），
+   等外層帶 .scroll-reveal 的祖先元素被 IntersectionObserver 加上 .is-visible，
+   才切成 running，從 0 開始跑各自的 stagger delay，效果跟 Hero 標題一致 */
+.char-reveal-scroll .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.5em);
+    animation: charRise .6s cubic-bezier(.22, .68, 0, 1) forwards;
+    animation-play-state: paused;
+}
+
+.is-visible .char-reveal-scroll .char,
+.is-visible.char-reveal-scroll .char {
+    animation-play-state: running;
+}
+
 /* ---------- 滾動淡入(由 main.js 的 IntersectionObserver 加上 .is-visible) ---------- */
 .scroll-reveal {
     opacity: 0;
@@ -296,6 +313,7 @@
 @media (prefers-reduced-motion: reduce) {
 
     .char-reveal .char,
+    .char-reveal-scroll .char,
     .hero-media-mark-in,
     .scroll-reveal {
         opacity: 1;
