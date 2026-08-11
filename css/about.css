@@ -56,6 +56,23 @@
   color: var(--color-text);
 }
 
+.story-block-title,
+.story-block-text {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.8s cubic-bezier(.22, .68, 0, 1), transform 0.8s cubic-bezier(.22, .68, 0, 1);
+}
+
+.story-block-text {
+  transition-delay: 0.1s;
+}
+
+.story-block.is-visible .story-block-title,
+.story-block.is-visible .story-block-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .story-block-text {
   margin-top: 24px;
   font-size: 13.5px;
@@ -82,6 +99,8 @@
 
 .story-block-media {
   position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
 }
 
 .story-block-frame-label {
@@ -94,10 +113,10 @@
 }
 
 .story-block-parallax {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
+  height: 100%;
   will-change: transform;
 }
 
@@ -255,18 +274,31 @@
 
 /* 鏤空編號,跟首頁 Products 格線的 counter 數字同一套視覺語彙,
    由 JS 直接寫入文字內容(這裡不是靠 CSS counter,因為數字要跟著點擊切換) */
-.craft-frame-index {
+.craft-dots {
   position: absolute;
-  left: 16px;
-  bottom: 10px;
-  font-family: var(--font-display-en);
-  font-weight: 300;
-  font-size: clamp(30px, 4vw, 46px);
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  z-index: 1;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 9px;
+  z-index: 2;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+}
+
+.craft-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.craft-dot.is-active {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.25);
 }
 
 .craft-caption {
@@ -372,13 +404,16 @@
 
   .story-block-img,
   .story-block-divider,
-  .story-block-mark,
+  .story-block-title,
+  .story-block-text,
   .craft-frame-img {
     transition: none !important;
     animation: none !important;
   }
 
-  .story-block-img {
+  .story-block-img,
+  .story-block-title,
+  .story-block-text {
     opacity: 1;
     transform: none;
   }

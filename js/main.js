@@ -1,4 +1,3 @@
-
 import { getProducts, getProductByHandle } from './data-service.js';
 import { renderProducts, renderProductList, renderProductDetail, renderProductNotFound, renderPriceHtml, renderCart, renderCartEmpty } from './render.js';
 import { loadLayout } from './partials.js';
@@ -332,6 +331,100 @@ async function initCartCount() {
   }
 }
 
+// ---------- 04 職人日常圖庫(about.html) ----------
+// 3 個分類縮圖，每個分類可放多張照片(data-images 逗號分隔)，
+// 選了分類後自動輪播該分類照片，小點點可直接跳，大圖本身也能點手動切換。
+function initCraftGallery() {
+  const frame = document.getElementById('craft-frame');
+  if (!frame) return;
+
+  const mainImg = document.getElementById('craft-main-img');
+  const dotsWrap = document.getElementById('craft-dots');
+  const captionTitle = document.getElementById('craft-caption-title');
+  const captionDesc = document.getElementById('craft-caption-desc');
+  const caption = document.getElementById('craft-caption');
+  const thumbs = document.querySelectorAll('.craft-thumb');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const CRAFT_INTERVAL = 4000;
+  let images = [];
+  let current = 0;
+  let timer = null;
+
+  function renderDots() {
+    dotsWrap.innerHTML = images
+      .map((_, i) => `<button type="button" class="craft-dot${i === current ? ' is-active' : ''}" data-i="${i}" aria-label="第 ${i + 1} 張"></button>`)
+      .join('');
+    dotsWrap.querySelectorAll('.craft-dot').forEach((dot) => {
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showImage(Number(dot.dataset.i));
+        restartTimer();
+      });
+    });
+  }
+
+  function showImage(index) {
+    current = (index + images.length) % images.length;
+    mainImg.classList.add('is-swapping');
+    window.setTimeout(() => {
+      mainImg.src = images[current];
+      mainImg.classList.remove('is-swapping');
+    }, 220);
+    dotsWrap.querySelectorAll('.craft-dot').forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === current);
+    });
+  }
+
+  function restartTimer() {
+    if (timer) window.clearInterval(timer);
+    if (reduceMotion || images.length <= 1) return;
+    timer = window.setInterval(() => showImage(current + 1), CRAFT_INTERVAL);
+  }
+
+  function setCategory(thumb) {
+    images = thumb.dataset.images.split(',').map((s) => s.trim()).filter(Boolean);
+    current = 0;
+    mainImg.src = images[0];
+    mainImg.alt = thumb.dataset.title || '';
+    if (captionTitle) captionTitle.textContent = thumb.dataset.title || '';
+    if (captionDesc) captionDesc.textContent = thumb.dataset.desc || '';
+    if (caption) {
+      caption.classList.add('is-updating');
+      window.setTimeout(() => caption.classList.remove('is-updating'), 250);
+    }
+    renderDots();
+    restartTimer();
+  }
+
+  thumbs.forEach((thumb) => {
+    thumb.addEventListener('click', () => {
+      if (thumb.classList.contains('is-active')) return;
+      thumbs.forEach((t) => {
+        t.classList.toggle('is-active', t === thumb);
+        t.setAttribute('aria-selected', t === thumb ? 'true' : 'false');
+      });
+      setCategory(thumb);
+    });
+  });
+
+  frame.addEventListener('click', () => {
+    showImage(current + 1);
+    restartTimer();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (timer) window.clearInterval(timer);
+    } else {
+      restartTimer();
+    }
+  });
+
+  const initialThumb = document.querySelector('.craft-thumb.is-active') || thumbs[0];
+  if (initialThumb) setCategory(initialThumb);
+}
+
 // ---------- 逐字浮現動畫 ----------
 // 用 TreeWalker 只包住文字節點，<br> 等其他標籤原封不動，
 // 所以 HTML 裡不用先手動拆成多個 <span class="line">。
@@ -453,68 +546,6 @@ function initHeroSlideshow() {
   requestAnimationFrame(loop);
 }
 
-// ---------- 關於我們頁:職人日常圖庫(點縮圖切換大圖) ----------
-// 只有 about.html 有 #craft-main-img 時才會動作。切換邏輯跟商品詳情頁的
-// 縮圖淡出/淡入類似,差別是這裡額外疊加 scale + translateY,讓「換圖」
-// 這個動作本身帶一點視差般的縱深感，不是單純的 opacity 交叉淡化。
-const CRAFT_SWAP_MS = 420; // 要跟 css/about-page.css 的 .craft-frame-img 過渡時間搭配
-
-function initCraftGallery() {
-  const mainImg = document.getElementById('craft-main-img');
-  const frame = document.getElementById('craft-frame');
-  const frameIndex = document.getElementById('craft-frame-index');
-  const caption = document.getElementById('craft-caption');
-  const captionTitle = document.getElementById('craft-caption-title');
-  const captionDesc = document.getElementById('craft-caption-desc');
-  const thumbs = Array.from(document.querySelectorAll('.craft-thumb'));
-  if (!mainImg || !thumbs.length) return;
-
-  const goToThumb = (thumb) => {
-    if (!thumb || thumb.classList.contains('is-active')) return;
-
-    thumbs.forEach((t) => {
-      t.classList.toggle('is-active', t === thumb);
-      t.setAttribute('aria-selected', t === thumb ? 'true' : 'false');
-    });
-
-    mainImg.classList.add('is-swapping');
-    if (caption) caption.classList.add('is-updating');
-
-    window.setTimeout(() => {
-      mainImg.src = thumb.dataset.src;
-      mainImg.alt = thumb.dataset.title || '';
-      if (frameIndex) frameIndex.textContent = thumb.dataset.index || '';
-      if (captionTitle) captionTitle.textContent = thumb.dataset.title || '';
-      if (captionDesc) captionDesc.textContent = thumb.dataset.desc || '';
-
-      // 換完圖再讓大圖從「放大+位移」的狀態收回原位,製造前後兩段對稱的視差感
-      mainImg.classList.remove('is-swapping');
-      if (caption) caption.classList.remove('is-updating');
-    }, CRAFT_SWAP_MS);
-  };
-
-  thumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => goToThumb(thumb));
-  });
-
-  // 大圖本身也能點:往下一張推進(到底再繞回第一張),
-  // 讓「換圖」不是只能靠旁邊的縮圖列，大圖也是一個可互動的入口
-  if (frame) {
-    const goNext = () => {
-      const activeIdx = thumbs.findIndex((t) => t.classList.contains('is-active'));
-      const nextThumb = thumbs[(activeIdx + 1) % thumbs.length];
-      goToThumb(nextThumb);
-    };
-    frame.addEventListener('click', goNext);
-    frame.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        goNext();
-      }
-    });
-  }
-}
-
 // ---------- 通用捲動視差:給任何帶 data-parallax="速度" 的元素用 ----------
 // 速度是 0~1 的相對值,數字越大位移越明顯。之後 Products / Contact 要加視差,
 // 直接在該元素上補一個 data-parallax 屬性即可,不用再寫新的滾動邏輯。
@@ -584,7 +615,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await initProductDetail(); // 商品詳情頁(product.html)：只有存在 #product-detail 時才會動作
   await initCartPage();
   initCartCount();       // header 購物車數量徽章：所有頁面都要顯示，不能只靠 initCartPage
-  initCraftGallery();    // 關於我們頁：職人日常圖庫縮圖切換(只有 about.html 有對應元素時才動作)
+  initCraftGallery();    // 關於我們頁：職人日常圖庫分類輪播(只有 about.html 有對應元素時才動作)
   initScrollReveal();    // 再統一掛上滾動淡入觀察者(含剛插入的產品卡/商品詳情內容)
   initParallax();        // About 圖片、精選商品第一張圖的輕微視差
 });
