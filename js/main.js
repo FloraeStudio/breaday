@@ -560,6 +560,7 @@ function initParallax() {
   const items = Array.from(els).map((el) => ({
     el,
     speed: parseFloat(el.dataset.parallax) || 0.1,
+    fixed: el.dataset.parallaxFixed ? parseFloat(el.dataset.parallaxFixed) : null,
     scale: el.dataset.parallaxScale ? parseFloat(el.dataset.parallaxScale) : null,
     current: 0,
     target: 0,
@@ -569,8 +570,14 @@ function initParallax() {
     items.forEach((item) => {
       const rect = item.el.getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-      const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
-      item.target = (centerOffset / window.innerHeight) * -PARALLAX_STRENGTH * item.speed;
+      if (item.fixed !== null) {
+        // 跟 Hero 同一套公式：只看元素頂部的捲動進度，幅度是直接的 px 數
+        const progress = rect.top / window.innerHeight;
+        item.target = progress * -item.fixed;
+      } else {
+        const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
+        item.target = (centerOffset / window.innerHeight) * -PARALLAX_STRENGTH * item.speed;
+      }
     });
   };
 
@@ -606,16 +613,24 @@ function initSmoothScroll() {
   requestAnimationFrame(raf);
 }
 
+async function safeInit(fn, label) {
+  try {
+    await fn();
+  } catch (err) {
+    console.error(`${label} 初始化失敗:`, err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
-  initSmoothScroll();   // 越早接管滾動越好，放在最前面
-  await loadLayout();    // 共用 Header / Footer 先填進 DOM,並標記目前所在頁面
-  initCharReveal();      // hero 標題：頁面一載入就逐字浮現
-  initHeroSlideshow();   // hero 圖片：輪播 + 捲動視差
-  await initProducts();  // 產品卡先插入 DOM
-  await initProductDetail(); // 商品詳情頁(product.html)：只有存在 #product-detail 時才會動作
-  await initCartPage();
-  initCartCount();       // header 購物車數量徽章：所有頁面都要顯示，不能只靠 initCartPage
-  initCraftGallery();    // 關於我們頁：職人日常圖庫分類輪播(只有 about.html 有對應元素時才動作)
-  initScrollReveal();    // 再統一掛上滾動淡入觀察者(含剛插入的產品卡/商品詳情內容)
-  initParallax();        // About 圖片、精選商品第一張圖的輕微視差
+  initSmoothScroll();
+  await safeInit(loadLayout, 'loadLayout');
+  initCharReveal();
+  initHeroSlideshow();
+  await safeInit(initProducts, 'initProducts');
+  await safeInit(initProductDetail, 'initProductDetail');
+  await safeInit(initCartPage, 'initCartPage');
+  await safeInit(initCartCount, 'initCartCount');
+  initCraftGallery();
+  initScrollReveal();
+  initParallax();
 });
