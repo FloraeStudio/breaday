@@ -629,6 +629,23 @@ async function safeInit(fn, label) {
   }
 }
 
+function initContactForm() {
+  const form = document.getElementById('contact-form');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const message = form.message.value.trim();
+
+    const subject = encodeURIComponent(`來自官網的聯絡表單 - ${name}`);
+    const body = encodeURIComponent(`姓名：${name}\nEmail：${email}\n\n${message}`);
+    // TODO: 換成實際收件信箱
+    window.location.href = `mailto:hello@breaday.tw?subject=${subject}&body=${body}`;
+  });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   initSmoothScroll();
   await safeInit(loadLayout, 'loadLayout');
@@ -639,6 +656,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await safeInit(initProductDetail, 'initProductDetail');
   await safeInit(initCartPage, 'initCartPage');
   await safeInit(initCartCount, 'initCartCount');
+  initContactForm();
   initCraftGallery();
   initScrollReveal();
   initParallax();
