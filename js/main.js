@@ -555,7 +555,28 @@ function initParallax() {
   requestAnimationFrame(loop);
 }
 
+// ---------- 全站平滑滾動(Lenis) ----------
+// Lenis 會接管滑鼠滾輪，用阻尼內插的方式更新真正的 scrollY，
+// 所以其他效果(initScrollReveal 的 IntersectionObserver、initParallax
+// 讀取的 getBoundingClientRect)完全不用改，會自動跟著變平滑。
+function initSmoothScroll() {
+  if (typeof Lenis === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const lenis = new Lenis({
+    duration: 1.1,
+    easing: (t) => 1 - Math.pow(1 - t, 3),
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  initSmoothScroll();   // 越早接管滾動越好，放在最前面
   await loadLayout();    // 共用 Header / Footer 先填進 DOM,並標記目前所在頁面
   initCharReveal();      // hero 標題：頁面一載入就逐字浮現
   initHeroSlideshow();   // hero 圖片：輪播 + 捲動視差
