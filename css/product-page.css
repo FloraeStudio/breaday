@@ -28,6 +28,15 @@
         grid-template-columns: 1fr;
         gap: 40px;
     }
+
+    /* .section-index 在這個斷點會從直排切成橫排的整條標籤列(見 sections.css),
+       .product-info 也要跟著從左右並排改成上下堆疊,標籤列才會是滿版橫條，
+       不會被硬擠成跟內容並排的窄欄 */
+    .product-info,
+    .product-not-found {
+        flex-direction: column;
+        gap: 0;
+    }
 }
 
 /* ---------- 圖片區 ---------- */
