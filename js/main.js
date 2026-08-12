@@ -89,75 +89,83 @@ function findMatchingVariant(variants, selectedOptions) {
   );
 }
 
-// ---------- 購物車頁(cart.html) ----------
-async function initCartPage() {
-  const cartBody = document.getElementById('cart-body');
-  if (!cartBody) return;
+async function initProductDetail() {
+  const detailContainer = document.getElementById('product-detail');
+  if (!detailContainer) return;
 
-  function renderCurrentCart(cart) {
-    if (!cart.lines.length) {
-      renderCartEmpty(cartBody);
-      renderCartCount(cart);
-      return;
-    }
-    renderCart(cartBody, cart);
-    renderCartCount(cart);
-    initScrollReveal();
-    bindCartRowEvents();
+  const handle = new URLSearchParams(window.location.search).get('handle');
+  const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+  const relatedSection = document.getElementById('product-related');
+
+  if (!handle) {
+    renderProductNotFound(detailContainer);
+    if (relatedSection) relatedSection.hidden = true;
+    return;
   }
 
-  // 統一處理「改數量/刪除」的更新流程:先在該列標記 is-updating(立即視覺回饋),
-  // updateCartLine/removeFromCart 本身就會回傳更新後的購物車,直接拿來重繪，
-  // 不用再另外呼叫 getOrCreateCart() 多打一次 API
-  async function applyLineUpdate(lineId, updateFn) {
-    const row = cartBody.querySelector(`.cart-row[data-line-id="${lineId}"]`);
-    if (row) row.classList.add('is-updating');
-    try {
-      const cart = await updateFn();
-      renderCurrentCart(cart);
-    } catch (err) {
-      console.error('更新購物車失敗:', err);
-      if (row) row.classList.remove('is-updating');
-    }
-  }
-
-  function bindCartRowEvents() {
-    cartBody.querySelectorAll('.qty-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const { lineId, action } = btn.dataset;
-        const input = cartBody.querySelector(`.cart-qty-input[data-line-id="${lineId}"]`);
-        const current = parseInt(input.value, 10) || 1;
-        const next = action === 'inc' ? current + 1 : Math.max(1, current - 1);
-        applyLineUpdate(lineId, () => updateCartLine(lineId, next));
-      });
-    });
-
-    cartBody.querySelectorAll('.cart-qty-input').forEach((input) => {
-      input.addEventListener('change', () => {
-        const { lineId } = input.dataset;
-        const next = Math.max(1, parseInt(input.value, 10) || 1);
-        applyLineUpdate(lineId, () => updateCartLine(lineId, next));
-      });
-    });
-
-    cartBody.querySelectorAll('.cart-row-remove').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        applyLineUpdate(btn.dataset.lineId, () => removeFromCart(btn.dataset.lineId));
-      });
-    });
-  }
-
+  let product;
   try {
-    const cart = await getOrCreateCart();
-    renderCurrentCart(cart);
+    product = await getProductByHandle(handle);
   } catch (err) {
-    console.error('讀取購物車失敗:', err);
-    cartBody.innerHTML = `<p class="cart-empty-text">購物車讀取失敗，請重新整理再試一次。</p>`;
+    console.error('讀取商品詳情失敗:', err);
+    product = null;
+  }
+
+  if (!product) {
+    renderProductNotFound(detailContainer);
+    if (relatedSection) relatedSection.hidden = true;
+    return;
+  }
+
+  document.title = `${product.name} | BREADAY 台灣`;
+  if (breadcrumbCurrent) breadcrumbCurrent.textContent = product.name;
+
+  renderProductDetail(detailContainer, product);
+
+  // 規格按鈕:純顯示切換用途(不影響購買),點擊只切換 is-active 樣式
+  detailContainer.querySelectorAll('.option-swatch').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const { optionName } = btn.dataset;
+      detailContainer
+        .querySelectorAll(`.option-swatch[data-option-name="${optionName}"]`)
+        .forEach((sibling) => sibling.classList.toggle('is-active', sibling === btn));
+    });
+  });
+
+  // 圖片縮圖切換:淡出再淡入主圖
+  const mainImg = document.getElementById('pd-main-img');
+  detailContainer.querySelectorAll('.product-thumb').forEach((thumb) => {
+    thumb.addEventListener('click', () => {
+      if (thumb.classList.contains('is-active') || !mainImg) return;
+      detailContainer
+        .querySelectorAll('.product-thumb')
+        .forEach((t) => t.classList.toggle('is-active', t === thumb));
+      mainImg.style.opacity = '0';
+      window.setTimeout(() => {
+        if (mainImg.tagName === 'IMG') mainImg.src = thumb.dataset.src;
+        else mainImg.style.backgroundImage = `url('${thumb.dataset.src}')`;
+        mainImg.style.opacity = '1';
+      }, 300);
+    });
+  }
+  );
+  // ---- 你可能也喜歡:從商品列表挑幾件、排除自己 ----
+  const relatedGrid = document.getElementById('related-grid');
+  if (relatedGrid) {
+    try {
+      const all = await getProducts();
+      const related = all.filter((p) => p.handle !== product.handle).slice(0, 3);
+      if (related.length) {
+        renderProducts(relatedGrid, related);
+      } else if (relatedSection) {
+        relatedSection.hidden = true;
+      }
+    } catch (err) {
+      console.error('讀取相關商品失敗:', err);
+      if (relatedSection) relatedSection.hidden = true;
+    }
   }
 }
-
-// ---------- 購物車數量徽章(header,所有頁面共用) ----------
-// 暫時不需要購物功能，所以先刪去
 
 // ---------- 04 職人日常圖庫(about.html) ----------
 // 3 個分類縮圖，每個分類可放多張照片(data-images 逗號分隔)，
