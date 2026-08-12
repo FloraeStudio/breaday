@@ -51,7 +51,12 @@
                             <button type="submit" class="btn btn-accent contact-btn">送出訊息</button>
                         </form>
                     </div>
+                    <div class="contact-media">
+                        <img class="contact-media-img" data-parallax="0.15" src="assets/images/contact/breaday-3.webp"
+                            alt="BREADAY 台灣店內一隅">
+                    </div>
                 </div>
+
                 <div class="contact-stores">
                     <div class="contact-store scroll-reveal">
                         <div class="section-index" aria-hidden="true">
@@ -66,29 +71,16 @@
                     </div>
 
                     <div class="contact-origin scroll-reveal">
-                        <div class="contact-origin-top">
-                            <div class="contact-origin-media">
-                                <img class="contact-origin-img" src="assets/images/contact/breaday-3.webp"
-                                    alt="BREADAY & FUGLEN COFFEE">
-                            </div>
-                            <div class="contact-origin-body">
-                                <div class="section-index" aria-hidden="true">
-                                    <span>JP</span>
-                                    <span>品牌起源</span>
-                                </div>
-                                <img class="contact-origin-logo" src="assets/images/breaday.webp" alt="BREADAY">
-                                <p class="contact-note">
-                                    來自日本熊本的麵包店，<a class="contact-note-link"
-                                        href="https://maps.app.goo.gl/hJdR6WXangAjkH7z8">熊本本店位置 →</a>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="contact-origin-banners">
-                            <img class="contact-origin-banner" src="assets/images/contact/breaday-1.webp"
+                        <div class="contact-origin-logos">
+                            <img class="contact-origin-logo" src="assets/images/contact/breaday-1.webp"
                                 alt="BREADAY TAIPEI">
-                            <img class="contact-origin-banner" src="assets/images/contact/breaday-2.webp"
-                                alt="FUGLEN COFFEE">
+                            <img class="contact-origin-logo" src="assets/images/contact/breaday-2.webp"
+                                alt="COFFEE BEANS CAME FROM FUGLEN">
                         </div>
+                        <p class="contact-note">
+                            來自日本熊本的麵包店，<a class="contact-note-link"
+                                href="https://maps.app.goo.gl/hJdR6WXangAjkH7z8">熊本本店位置 →</a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -100,21 +92,21 @@
     <script src="https://unpkg.com/lenis@latest/dist/lenis.min.js"></script>
     <script type="module" src="js/main.js"></script>
     <script>
-    document.getElementById('contact-form')?.addEventListener('submit', function (e) {
-        e.preventDefault();
+        document.getElementById('contact-form')?.addEventListener('submit', function (e) {
+            e.preventDefault();
 
-        const CONTACT_EMAIL = 'breaday2025@gmail.com';
+            const CONTACT_EMAIL = 'breaday2025@gmail.com';
 
-        const name = document.getElementById('cf-name').value;
-        const email = document.getElementById('cf-email').value;
-        const message = document.getElementById('cf-message').value;
+            const name = document.getElementById('cf-name').value;
+            const email = document.getElementById('cf-email').value;
+            const message = document.getElementById('cf-message').value;
 
-        const subject = encodeURIComponent(`來自官網的訊息 - ${name}`);
-        const body = encodeURIComponent(`姓名：${name}\nEmail：${email}\n\n${message}`);
+            const subject = encodeURIComponent(`BREADAY 台灣官網 - ${name}`);
+            const body = encodeURIComponent(`姓名：${name}\nEmail：${email}\n\n${message}`);
 
-        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-    });
-</script>
+            window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+        });
+    </script>
 </body>
 
 </html>
