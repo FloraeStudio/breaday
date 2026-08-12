@@ -1,7 +1,6 @@
 import { getProducts, getProductByHandle } from './data-service.js';
-import { renderProducts, renderProductList, renderProductDetail, renderProductNotFound, renderPriceHtml, renderCart, renderCartEmpty } from './render.js';
+import { renderProducts, renderProductList, renderProductDetail, renderProductNotFound, renderPriceHtml } from './render.js';
 import { loadLayout } from './partials.js';
-import { getOrCreateCart, addToCart, updateCartLine, removeFromCart } from './cart-service.js';
 
 // ---------- 產品渲染 ----------
 // #product-grid:所有商品頁(products.html)的完整格線
@@ -90,163 +89,6 @@ function findMatchingVariant(variants, selectedOptions) {
   );
 }
 
-async function initProductDetail() {
-  const detailContainer = document.getElementById('product-detail');
-  if (!detailContainer) return;
-
-  const handle = new URLSearchParams(window.location.search).get('handle');
-  const breadcrumbCurrent = document.getElementById('breadcrumb-current');
-  const relatedSection = document.getElementById('product-related');
-
-  if (!handle) {
-    renderProductNotFound(detailContainer);
-    if (relatedSection) relatedSection.hidden = true;
-    return;
-  }
-
-  let product;
-  try {
-    product = await getProductByHandle(handle);
-  } catch (err) {
-    console.error('讀取商品詳情失敗:', err);
-    product = null;
-  }
-
-  if (!product) {
-    renderProductNotFound(detailContainer);
-    if (relatedSection) relatedSection.hidden = true;
-    return;
-  }
-
-  document.title = `${product.name} | BREADAY 台灣`;
-  if (breadcrumbCurrent) breadcrumbCurrent.textContent = product.name;
-
-  renderProductDetail(detailContainer, product);
-
-  // ---- 規格選擇、數量、加入購物車的互動邏輯 ----
-  const priceEl = document.getElementById('pd-price');
-  const feedbackEl = document.getElementById('pd-feedback');
-  const addBtn = document.getElementById('pd-add-btn');
-  const qtyInput = document.getElementById('pd-qty');
-
-  // 預設選取第一個仍有貨的變體；如果全部都沒貨，退回選第一個變體純顯示
-  const initialVariant =
-    product.variants.find((v) => v.available) ?? product.variants[0];
-  const selectedOptions = {};
-  (initialVariant?.options ?? []).forEach((opt) => {
-    selectedOptions[opt.name] = opt.value;
-  });
-
-  function updateForVariant(variant) {
-    if (!variant) {
-      if (priceEl) priceEl.textContent = '此規格組合無貨';
-      if (addBtn) {
-        addBtn.disabled = true;
-        addBtn.textContent = '無法購買';
-      }
-      return;
-    }
-    if (priceEl) priceEl.innerHTML = renderPriceHtml(variant.price, variant.compareAtPrice);
-    if (addBtn) {
-      addBtn.disabled = !variant.available;
-      addBtn.textContent = variant.available ? '加入購物車' : '已售完';
-    }
-  }
-  updateForVariant(initialVariant);
-
-  // 規格按鈕(口味/尺寸等):點擊切換同一組內的 is-active,並重新比對變體
-  detailContainer.querySelectorAll('.option-swatch').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const { optionName, optionValue } = btn.dataset;
-      detailContainer
-        .querySelectorAll(`.option-swatch[data-option-name="${optionName}"]`)
-        .forEach((sibling) => sibling.classList.toggle('is-active', sibling === btn));
-      selectedOptions[optionName] = optionValue;
-      updateForVariant(findMatchingVariant(product.variants, selectedOptions));
-      if (feedbackEl) feedbackEl.textContent = '';
-    });
-  });
-
-  // 圖片縮圖切換:淡出再淡入主圖,不做無限循環動畫，切換完就靜止
-  const mainImg = document.getElementById('pd-main-img');
-  detailContainer.querySelectorAll('.product-thumb').forEach((thumb) => {
-    thumb.addEventListener('click', () => {
-      if (thumb.classList.contains('is-active') || !mainImg) return;
-      detailContainer
-        .querySelectorAll('.product-thumb')
-        .forEach((t) => t.classList.toggle('is-active', t === thumb));
-      mainImg.style.opacity = '0';
-      window.setTimeout(() => {
-        if (mainImg.tagName === 'IMG') mainImg.src = thumb.dataset.src;
-        else mainImg.style.backgroundImage = `url('${thumb.dataset.src}')`;
-        mainImg.style.opacity = '1';
-      }, 300);
-    });
-  });
-
-  // 數量加減按鈕
-  detailContainer.querySelectorAll('.qty-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      if (!qtyInput) return;
-      const current = parseInt(qtyInput.value, 10) || 1;
-      const next = btn.dataset.action === 'inc' ? current + 1 : Math.max(1, current - 1);
-      qtyInput.value = next;
-    });
-  });
-
-  // 加入購物車:呼叫 cart-service 的 Shopify Cart API，成功後給明確回饋，
-  // 並附上「前往結帳」連結(cart.checkoutUrl 是 Shopify 官方結帳頁，購物車頁完成前先用這個銜接)
-  if (addBtn) {
-    addBtn.addEventListener('click', async () => {
-      const variant = findMatchingVariant(product.variants, selectedOptions);
-      if (!variant || !variant.available) return;
-      const quantity = Math.max(1, parseInt(qtyInput?.value, 10) || 1);
-
-      addBtn.disabled = true;
-      const originalLabel = addBtn.textContent;
-      addBtn.textContent = '加入中...';
-      if (feedbackEl) feedbackEl.textContent = '';
-
-      try {
-        const cart = await addToCart(variant.id, quantity);
-        if (feedbackEl) {
-          feedbackEl.innerHTML = `
-          <span class="pd-feedback-success">
-            <span>已加入購物車</span>
-            <span class="pd-feedback-sep" aria-hidden="true">・</span>
-            <a href="cart.html" class="pd-checkout-link">查看購物車 →</a>
-          </span>
-        `;
-        }
-        renderCartCount(cart);
-      } catch (err) {
-        console.error('加入購物車失敗:', err);
-        if (feedbackEl) feedbackEl.innerHTML = `<span class="pd-feedback-error">加入購物車失敗，請稍後再試一次。</span>`;
-      } finally {
-        addBtn.disabled = !variant.available;
-        addBtn.textContent = originalLabel;
-      }
-    });
-  }
-
-  // ---- 你可能也喜歡:從商品列表挑幾件、排除自己 ----
-  const relatedGrid = document.getElementById('related-grid');
-  if (relatedGrid) {
-    try {
-      const all = await getProducts();
-      const related = all.filter((p) => p.handle !== product.handle).slice(0, 3);
-      if (related.length) {
-        renderProducts(relatedGrid, related);
-      } else if (relatedSection) {
-        relatedSection.hidden = true;
-      }
-    } catch (err) {
-      console.error('讀取相關商品失敗:', err);
-      if (relatedSection) relatedSection.hidden = true;
-    }
-  }
-}
-
 // ---------- 購物車頁(cart.html) ----------
 async function initCartPage() {
   const cartBody = document.getElementById('cart-body');
@@ -315,21 +157,7 @@ async function initCartPage() {
 }
 
 // ---------- 購物車數量徽章(header,所有頁面共用) ----------
-function renderCartCount(cart) {
-  const badge = document.getElementById('cart-count');
-  if (!badge) return;
-  const count = cart.lines.reduce((sum, line) => sum + line.quantity, 0);
-  badge.textContent = count > 0 ? `(${count})` : '';
-  badge.hidden = count === 0;
-}
-
-async function initCartCount() {
-  try {
-    renderCartCount(await getOrCreateCart());
-  } catch (err) {
-    console.error('讀取購物車數量失敗:', err);
-  }
-}
+// 暫時不需要購物功能，所以先刪去
 
 // ---------- 04 職人日常圖庫(about.html) ----------
 // 3 個分類縮圖，每個分類可放多張照片(data-images 逗號分隔)，
@@ -654,8 +482,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   initHeroSlideshow();
   await safeInit(initProducts, 'initProducts');
   await safeInit(initProductDetail, 'initProductDetail');
-  await safeInit(initCartPage, 'initCartPage');
-  await safeInit(initCartCount, 'initCartCount');
   initContactForm();
   initCraftGallery();
   initScrollReveal();
