@@ -680,6 +680,50 @@
     counter-reset: product-counter;
 }
 
+/* 首頁精選專用:招牌商品放大成不對稱 bento 的主視覺,
+   只作用在 #featured-grid,不影響商品詳情頁的「相關商品」格線 */
+#featured-grid {
+    grid-template-columns: 1.4fr 1fr;
+}
+
+.product-card--signature {
+    grid-row: span 2;
+}
+
+.product-card--signature .product-media {
+    aspect-ratio: 3 / 4;
+}
+
+@media (max-width:860px) {
+    #featured-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .product-card--signature {
+        grid-column: span 2;
+        grid-row: auto;
+        aspect-ratio: auto;
+    }
+
+    .product-card--signature .product-media {
+        aspect-ratio: 16 / 10;
+    }
+}
+
+@media (max-width:520px) {
+    #featured-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-card--signature {
+        grid-column: span 1;
+    }
+
+    .product-card--signature .product-media {
+        aspect-ratio: 4 / 3;
+    }
+}
+
 .product-media {
     aspect-ratio: 4 / 5;
 }
@@ -801,6 +845,11 @@
     color: var(--color-text);
     padding: 5px 10px;
     z-index: 2;
+}
+
+.product-tag--signature {
+    background: var(--color-accent);
+    color: var(--color-bg);
 }
 
 .product-name {

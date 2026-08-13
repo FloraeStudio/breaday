@@ -1,11 +1,20 @@
 import { getProducts, getProductByHandle } from './data-service.js';
-import { renderProducts, renderProductList, renderProductDetail, renderProductNotFound, renderPriceHtml } from './render.js';
+import { renderProducts, renderProductList, renderProductDetail, renderProductNotFound, renderPriceHtml, SIGNATURE_TAG } from './render.js';
 import { loadLayout } from './partials.js';
 
 // ---------- 產品渲染 ----------
 // #product-grid:所有商品頁(products.html)的完整格線
 // #featured-grid:首頁(index.html)的精選預覽,只取前 3 件
 const FEATURED_COUNT = 3;
+
+// 把標記「招牌」的商品搬到最前面，首頁精選才會固定它是第一個，
+// 不受 Shopify 後台商品排序異動影響。
+function pinSignature(products) {
+  const idx = products.findIndex((p) => p.tag === SIGNATURE_TAG);
+  if (idx <= 0) return products; // 沒找到，或本來就在第一個，不用動
+  const pinned = products[idx];
+  return [pinned, ...products.slice(0, idx), ...products.slice(idx + 1)];
+}
 
 // 目前只有兩種分類:麵包(預設,後台 Product type 沒填的商品都算這裡)、咖啡。
 // 之後要加第三種分類,在這裡多加一組 filter、products.html 多加一個分類頁籤按鈕即可。
@@ -33,7 +42,7 @@ async function initProducts() {
     console.error('讀取商品列表失敗:', err);
   }
 
-  if (featuredGrid) renderProducts(featuredGrid, products.slice(0, FEATURED_COUNT));
+  if (featuredGrid) renderProducts(featuredGrid, pinSignature(products).slice(0, FEATURED_COUNT));
   if (!fullList) return;
 
   const emptyState = document.getElementById('product-list-empty');

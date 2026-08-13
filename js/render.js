@@ -1,6 +1,8 @@
 // 純畫面渲染，不碰資料來源。輸入資料格式固定為 { id, handle, tag, name, price, image }
 // 大圖片、不規則格線（不對稱 bento），不做視差
 
+export const SIGNATURE_TAG = '招牌'; // 後台商品 tag 填這個字，就會被判定為招牌商品
+
 function formatPrice(price) {
   return `NT$ ${Math.round(Number(price)).toLocaleString('zh-Hant-TW')}`;
 }
@@ -16,31 +18,37 @@ export function renderPriceHtml(price, compareAtPrice) {
 }
 
 export function renderProducts(container, products) {
-  container.innerHTML = products.map((p, index) => `
-    <a href="product.html?handle=${encodeURIComponent(p.handle)}" class="product-card scroll-reveal" data-id="${p.id}" style="--i:${index}">
+  container.innerHTML = products.map((p, index) => {
+    const isSignature = p.tag === SIGNATURE_TAG;
+    return `
+    <a href="product.html?handle=${encodeURIComponent(p.handle)}" class="product-card scroll-reveal${isSignature ? ' product-card--signature' : ''}" data-id="${p.id}" style="--i:${index}">
       <div class="product-media">
         <div class="product-media-img"${p.image ? ` style="background-image:url('${p.image}')"` : ''}></div>
-        ${p.tag ? `<span class="product-tag">${p.tag}</span>` : ''}
+        ${p.tag ? `<span class="product-tag${isSignature ? ' product-tag--signature' : ''}">${p.tag}</span>` : ''}
       </div>
       <div class="product-name">${p.name}</div>
       <div class="product-price">${renderPriceHtml(p.price, p.compareAtPrice)}</div>
     </a>
-  `).join('');
+  `;
+  }).join('');
 }
 
 export function renderProductList(container, products) {
-  container.innerHTML = products.map((p, index) => `
-    <li class="product-row scroll-reveal" style="--i:${index}">
+  container.innerHTML = products.map((p, index) => {
+    const isSignature = p.tag === SIGNATURE_TAG;
+    return `
+    <li class="product-row scroll-reveal${isSignature ? ' product-row--signature' : ''}" style="--i:${index}">
       <a href="product.html?handle=${encodeURIComponent(p.handle)}" class="product-row-link" data-id="${p.id}">
         <span class="product-row-media"${p.image ? ` style="background-image:url('${p.image}')"` : ''}></span>
         <span class="product-row-info">
           <span class="product-row-name">${p.name}</span>
-          ${p.tag ? `<span class="product-row-tag">${p.tag}</span>` : ''}
+          ${p.tag ? `<span class="product-row-tag${isSignature ? ' product-row-tag--signature' : ''}">${p.tag}</span>` : ''}
         </span>
         <span class="product-row-price">${renderPriceHtml(p.price, p.compareAtPrice)}</span>
       </a>
     </li>
-  `).join('');
+  `;
+  }).join('');
 }
 
 // ---------- 商品詳情頁 ----------

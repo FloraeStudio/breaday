@@ -184,6 +184,24 @@
     color: var(--color-text-soft);
 }
 
+.product-row--signature .product-row-link {
+    padding-left: 20px;
+    border-left: 2px solid var(--color-accent);
+}
+
+.product-row--signature .product-row-media {
+    width: 108px;
+}
+
+.product-row-tag--signature {
+    display: inline-flex;
+    width: fit-content;
+    color: var(--color-bg);
+    background: var(--color-accent);
+    padding: 3px 10px;
+    letter-spacing: 0.12em;
+}
+
 .product-row-price {
     flex-shrink: 0;
     font-size: 14px;
