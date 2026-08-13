@@ -33,11 +33,15 @@ export function renderProducts(container, products) {
   }).join('');
 }
 
-export function renderProductList(container, products) {
-  container.innerHTML = products.map((p, index) => {
+export function renderProductList(container, products, { append = false } = {}) {
+  // append 模式(載入更多)時，--i 要接著現有的 <li> 數量往下算，
+  // 新一批的進場延遲動畫才會接續前面，不會從 0 重新開始跟舊項目撞在一起。
+  const startIndex = append ? container.children.length : 0;
+
+  const html = products.map((p, index) => {
     const isSignature = p.tags.includes(SIGNATURE_TAG);
     return `
-    <li class="product-row scroll-reveal${isSignature ? ' product-row--signature' : ''}" style="--i:${index}">
+    <li class="product-row scroll-reveal${isSignature ? ' product-row--signature' : ''}" style="--i:${startIndex + index}">
       <a href="product.html?handle=${encodeURIComponent(p.handle)}" class="product-row-link" data-id="${p.id}">
         <span class="product-row-media"${p.image ? ` style="background-image:url('${p.image}')"` : ''}></span>
         <span class="product-row-info">
@@ -49,6 +53,12 @@ export function renderProductList(container, products) {
     </li>
   `;
   }).join('');
+
+  if (append) {
+    container.insertAdjacentHTML('beforeend', html);
+  } else {
+    container.innerHTML = html;
+  }
 }
 
 // ---------- 商品詳情頁 ----------

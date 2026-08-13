@@ -4,9 +4,11 @@
 
 import { SHOPIFY_DOMAIN, STOREFRONT_TOKEN, API_VERSION } from './shopify-config.js';
 
+const PAGE_SIZE = 12;
+
 const QUERY = `
-  query getProducts {
-    products(first: 20) {
+  query getProducts($cursor: String, $query: String) {
+    products(first: ${PAGE_SIZE}, after: $cursor, query: $query) {
       edges {
         node {
           id
@@ -19,26 +21,28 @@ const QUERY = `
           featuredImage { url }
         }
       }
+      pageInfo { hasNextPage endCursor }
     }
   }
 `;
 
-export async function getProducts() {
+// categoryFilter 對應 Shopify 的 Product type，例如 '麵包'、'咖啡'；
+// 不傳(undefined)就是抓全部分類。
+export async function getProducts(cursor, categoryFilter) {
+  const shopifyQuery = categoryFilter ? `product_type:'${categoryFilter}'` : undefined;
+
   const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/${API_VERSION}/graphql.json`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN,
     },
-    body: JSON.stringify({ query: QUERY }),
+    body: JSON.stringify({ query: QUERY, variables: { cursor, query: shopifyQuery } }),
   });
 
   const { data } = await res.json();
 
-  // 轉換成 render.js 原本吃的格式，維持介面不變
-  // category 來自 Shopify 後台商品的「Product type」欄位(不是 tags),
-  // 之後要加新分類(例如「禮盒」),後台商品填對 Product type 就會自動歸類，前端不用再改。
-  return data.products.edges.map(({ node }) => ({
+  const products = data.products.edges.map(({ node }) => ({
     id: node.id,
     handle: node.handle,
     tags: node.tags || [],
@@ -48,6 +52,12 @@ export async function getProducts() {
     compareAtPrice: node.compareAtPriceRange?.minVariantPrice?.amount ?? null,
     image: node.featuredImage?.url ?? '',
   }));
+
+  return {
+    products,
+    hasNextPage: data.products.pageInfo.hasNextPage,
+    endCursor: data.products.pageInfo.endCursor,
+  };
 }
 
 // ★ 商品詳情頁專用：用 handle（網址上的 slug）查單一商品完整資料，

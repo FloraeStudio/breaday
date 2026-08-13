@@ -30,19 +30,27 @@ const CATEGORY_META = {
   coffee: { title: '咖啡', desc: '搭配麵包一起享用，簡單沖煮、剛剛好的溫度。' },
 };
 
+// CATEGORY_FILTERS 對應到 Shopify 的 Product type 篩選字串；
+// 之後要加新分類,這裡跟 products.html 的按鈕、data-service.js 的比對字串都要三處一起加。
+const CATEGORY_QUERY_VALUE = {
+  all: undefined,
+  bread: '麵包',
+  coffee: '咖啡',
+};
+
 async function initProducts() {
   const featuredGrid = document.getElementById('featured-grid');
   const fullList = document.getElementById('product-list');
   if (!featuredGrid && !fullList) return;
 
-  let products = [];
-  try {
-    products = await getProducts();
-  } catch (err) {
-    console.error('讀取商品列表失敗:', err);
+  if (featuredGrid) {
+    try {
+      const { products: featured } = await getProducts(undefined, undefined);
+      renderProducts(featuredGrid, pinSignature(featured).slice(0, FEATURED_COUNT));
+    } catch (err) {
+      console.error('讀取精選商品失敗:', err);
+    }
   }
-
-  if (featuredGrid) renderProducts(featuredGrid, pinSignature(products).slice(0, FEATURED_COUNT));
   if (!fullList) return;
 
   const emptyState = document.getElementById('product-list-empty');
@@ -50,32 +58,57 @@ async function initProducts() {
   const listTitle = document.querySelector('.product-list-title');
   const listDesc = document.querySelector('.product-list-desc');
   const breadcrumbCurrent = document.querySelector('.breadcrumb ol li:last-child');
+  const loadMoreBtn = document.getElementById('load-more');
 
-  if (!products.length) {
-    fullList.hidden = true;
-    if (emptyState) {
-      emptyState.hidden = false;
-      emptyState.textContent = '目前讀取不到商品，請稍後再試一次。';
+  // 每次切換分類都會重設這兩個值，「載入更多」永遠是問「目前分類的下一頁」。
+  let currentCursor = undefined;
+  let currentFilter = 'all';
+
+  const loadPage = async (filterKey, cursor) => {
+    const { products: pageProducts, hasNextPage, endCursor } =
+      await getProducts(cursor, CATEGORY_QUERY_VALUE[filterKey]);
+
+    if (cursor) {
+      // 「載入更多」：疊加在既有列表後面
+      renderProductList(fullList, pageProducts, { append: true });
+    } else {
+      // 換分類重新開始：整份換掉
+      renderProductList(fullList, pageProducts);
     }
-    return;
-  }
 
-  const renderFiltered = (filterKey) => {
-    const matcher = CATEGORY_FILTERS[filterKey] || CATEGORY_FILTERS.all;
-    const filtered = products.filter((p) => matcher(p.category || ''));
-    renderProductList(fullList, filtered);
-    fullList.hidden = filtered.length === 0;
-    if (emptyState) emptyState.hidden = filtered.length !== 0;
+    currentCursor = endCursor;
+    if (loadMoreBtn) loadMoreBtn.hidden = !hasNextPage;
+
+    const hasAnyProduct = cursor ? fullList.children.length > 0 : pageProducts.length > 0;
+    fullList.hidden = !hasAnyProduct;
+    if (emptyState) emptyState.hidden = hasAnyProduct;
+
+    initScrollReveal();
+  };
+
+  const switchFilter = async (filterKey) => {
+    currentFilter = filterKey;
+    currentCursor = undefined;
+    if (loadMoreBtn) loadMoreBtn.hidden = true;
 
     const meta = CATEGORY_META[filterKey] || CATEGORY_META.all;
     if (listTitle) listTitle.textContent = meta.title;
     if (listDesc) listDesc.textContent = meta.desc;
     if (breadcrumbCurrent) breadcrumbCurrent.textContent = meta.title;
 
-    initScrollReveal();
+    try {
+      await loadPage(filterKey, undefined);
+    } catch (err) {
+      console.error('讀取商品列表失敗:', err);
+      fullList.hidden = true;
+      if (emptyState) {
+        emptyState.hidden = false;
+        emptyState.textContent = '目前讀取不到商品，請稍後再試一次。';
+      }
+    }
   };
 
-  renderFiltered('all');
+  await switchFilter('all');
 
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
@@ -84,9 +117,22 @@ async function initProducts() {
         t.classList.toggle('is-active', t === tab);
         t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
       });
-      renderFiltered(tab.dataset.filter);
+      switchFilter(tab.dataset.filter);
     });
   });
+
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', async () => {
+      loadMoreBtn.disabled = true;
+      try {
+        await loadPage(currentFilter, currentCursor);
+      } catch (err) {
+        console.error('載入更多商品失敗:', err);
+      } finally {
+        loadMoreBtn.disabled = false;
+      }
+    });
+  }
 }
 
 // ---------- 商品詳情頁(product.html) ----------
@@ -162,7 +208,7 @@ async function initProductDetail() {
   const relatedGrid = document.getElementById('related-grid');
   if (relatedGrid) {
     try {
-      const all = await getProducts();
+      const { products: all } = await getProducts();
       const related = all.filter((p) => p.handle !== product.handle).slice(0, 3);
       if (related.length) {
         renderProducts(relatedGrid, related);
