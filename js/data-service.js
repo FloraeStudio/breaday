@@ -1,5 +1,5 @@
 // ★ 之後接後端(BaaS 或客製 API)時，只改這個檔案。
-//   回傳格式必須維持 { id, tag, name, price, image }，
+//   回傳格式必須維持 { id, tags, name, price, image }，
 //   render.js / main.js 不需要跟著改。
 
 import { SHOPIFY_DOMAIN, STOREFRONT_TOKEN, API_VERSION } from './shopify-config.js';
@@ -41,7 +41,7 @@ export async function getProducts() {
   return data.products.edges.map(({ node }) => ({
     id: node.id,
     handle: node.handle,
-    tag: node.tags?.[0] ?? '',
+    tags: node.tags || [],
     category: node.productType || '麵包',
     name: node.title,
     price: node.priceRange.minVariantPrice.amount,
@@ -113,7 +113,7 @@ export async function getProductByHandle(handle) {
     id: node.id,
     handle: node.handle,
     name: node.title,
-    tag: node.tags?.[0] ?? '',
+    tags: node.tags || [],
     description: node.description || '',
     images,
     options: node.options, // [{ name, values: [...] }]

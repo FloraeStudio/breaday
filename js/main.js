@@ -7,10 +7,10 @@ import { loadLayout } from './partials.js';
 // #featured-grid:首頁(index.html)的精選預覽,只取前 3 件
 const FEATURED_COUNT = 3;
 
-// 把標記「招牌」的商品搬到最前面，首頁精選才會固定它是第一個，
+// 把標記「職人嚴選」的商品搬到最前面，首頁精選才會固定它是第一個，
 // 不受 Shopify 後台商品排序異動影響。
 function pinSignature(products) {
-  const idx = products.findIndex((p) => p.tag === SIGNATURE_TAG);
+  const idx = products.findIndex((p) => p.tags.includes(SIGNATURE_TAG));
   if (idx <= 0) return products; // 沒找到，或本來就在第一個，不用動
   const pinned = products[idx];
   return [pinned, ...products.slice(0, idx), ...products.slice(idx + 1)];

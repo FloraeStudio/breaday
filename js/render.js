@@ -1,7 +1,7 @@
-// 純畫面渲染，不碰資料來源。輸入資料格式固定為 { id, handle, tag, name, price, image }
+// 純畫面渲染，不碰資料來源。輸入資料格式固定為 { id, handle, tags, name, price, image }
 // 大圖片、不規則格線（不對稱 bento），不做視差
 
-export const SIGNATURE_TAG = '職人推薦'; // 後台商品 tag 填這個字，就會被判定為招牌商品
+export const SIGNATURE_TAG = '職人嚴選'; // 後台商品的 tags 裡只要包含這個字，就會被判定為主打商品
 
 function formatPrice(price) {
   return `NT$ ${Math.round(Number(price)).toLocaleString('zh-Hant-TW')}`;
@@ -19,12 +19,12 @@ export function renderPriceHtml(price, compareAtPrice) {
 
 export function renderProducts(container, products) {
   container.innerHTML = products.map((p, index) => {
-    const isSignature = p.tag === SIGNATURE_TAG;
+    const isSignature = p.tags.includes(SIGNATURE_TAG);
     return `
     <a href="product.html?handle=${encodeURIComponent(p.handle)}" class="product-card scroll-reveal${isSignature ? ' product-card--signature' : ''}" data-id="${p.id}" style="--i:${index}">
       <div class="product-media">
         <div class="product-media-img"${p.image ? ` style="background-image:url('${p.image}')"` : ''}></div>
-        ${p.tag ? `<span class="product-tag${isSignature ? ' product-tag--signature' : ''}">${p.tag}</span>` : ''}
+        ${p.tags.map((t) => `<span class="product-tag${t === SIGNATURE_TAG ? ' product-tag--signature' : ''}">${t}</span>`).join('')}
       </div>
       <div class="product-name">${p.name}</div>
       <div class="product-price">${renderPriceHtml(p.price, p.compareAtPrice)}</div>
@@ -35,14 +35,14 @@ export function renderProducts(container, products) {
 
 export function renderProductList(container, products) {
   container.innerHTML = products.map((p, index) => {
-    const isSignature = p.tag === SIGNATURE_TAG;
+    const isSignature = p.tags.includes(SIGNATURE_TAG);
     return `
     <li class="product-row scroll-reveal${isSignature ? ' product-row--signature' : ''}" style="--i:${index}">
       <a href="product.html?handle=${encodeURIComponent(p.handle)}" class="product-row-link" data-id="${p.id}">
         <span class="product-row-media"${p.image ? ` style="background-image:url('${p.image}')"` : ''}></span>
         <span class="product-row-info">
           <span class="product-row-name">${p.name}</span>
-          ${p.tag ? `<span class="product-row-tag${isSignature ? ' product-row-tag--signature' : ''}">${p.tag}</span>` : ''}
+          ${p.tags.map((t) => `<span class="product-row-tag${t === SIGNATURE_TAG ? ' product-row-tag--signature' : ''}">${t}</span>`).join('')}
         </span>
         <span class="product-row-price">${renderPriceHtml(p.price, p.compareAtPrice)}</span>
       </a>
@@ -52,12 +52,13 @@ export function renderProductList(container, products) {
 }
 
 // ---------- 商品詳情頁 ----------
-// 輸入資料格式:{ id, handle, name, tag, description, images:[{url,alt}], options:[{name,values}], variants:[{id,title,available,price,options}] }
+// 輸入資料格式:{ id, handle, name, tags, description, images:[{url,alt}], options:[{name,values}], variants:[{id,title,available,price,options}] }
 // 只負責畫出骨架,互動邏輯(切圖、選規格、加入購物車)交給 main.js 的 initProductDetail 處理，
 // 這裡跟其他 render 函式一樣維持「只管畫面、不管資料/事件」的分工。
 export function renderProductDetail(container, product) {
   const hasImages = product.images.length > 0;
   const mainImage = hasImages ? product.images[0] : null;
+  const isSignature = product.tags.includes(SIGNATURE_TAG);
 
   const thumbsHtml = hasImages
     ? product.images.map((img, i) => `
@@ -99,11 +100,11 @@ export function renderProductDetail(container, product) {
       <div class="product-info">
         <div class="section-index" aria-hidden="true">
           <span>DETAIL</span>
-          <span>${(product.tag || 'PRODUCT').toUpperCase()}</span>
+          <span>${(product.tags[0] || 'PRODUCT').toUpperCase()}</span>
         </div>
 
         <div class="product-info-body scroll-reveal">
-          ${product.tag ? `<div class="product-info-tag">${product.tag}</div>` : ''}
+          ${product.tags.length ? `<div class="product-info-tags">${product.tags.map((t) => `<span class="product-info-tag${t === SIGNATURE_TAG ? ' product-info-tag--signature' : ''}">${t}</span>`).join('')}</div>` : ''}
           <h1 class="product-info-title">${product.name}</h1>
           <div class="product-info-divider" aria-hidden="true"></div>
           <div class="product-info-price" id="pd-price">${product.variants[0] ? renderPriceHtml(product.variants[0].price, product.variants[0].compareAtPrice) : ''}</div>
@@ -135,8 +136,3 @@ export function renderProductNotFound(container) {
     </div>
   `;
 }
-
-// ---------- 購物車頁(cart.html) ----------
-// 輸入資料格式:cart-service.js 的 formatCart() 回傳的
-// { id, checkoutUrl, subtotal, total, currency, lines:[{lineId, quantity, variantId, name, variantTitle, price, image}] }
-// 不需要結帳功能，所以先刪除
