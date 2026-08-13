@@ -1,7 +1,7 @@
 // 純畫面渲染，不碰資料來源。輸入資料格式固定為 { id, handle, tag, name, price, image }
 // 大圖片、不規則格線（不對稱 bento），不做視差
 
-export const SIGNATURE_TAG = '招牌'; // 後台商品 tag 填這個字，就會被判定為招牌商品
+export const SIGNATURE_TAG = '職人推薦'; // 後台商品 tag 填這個字，就會被判定為招牌商品
 
 function formatPrice(price) {
   return `NT$ ${Math.round(Number(price)).toLocaleString('zh-Hant-TW')}`;
