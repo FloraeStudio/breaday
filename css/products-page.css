@@ -248,6 +248,10 @@
     letter-spacing: 0.3em;
 }
 
+.load-more-btn[hidden] {
+    display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .load-more-btn {
         transition: border-color .35s ease, color .35s ease;
