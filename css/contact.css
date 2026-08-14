@@ -155,7 +155,9 @@
     grid-column: 3;
     grid-row: 1 / -1;
     width: 1px;
-    margin: calc(-1 * var(--space-6)) 0;
+    align-self: start;
+    margin-top: 52px;
+    height: calc(100% - 72px);
     background: var(--color-line);
 }
 
