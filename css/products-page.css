@@ -220,7 +220,7 @@
    hover 時字距拉開、變主色,放在清單正下方置中,呼應「型錄」的沉穩步調。 */
 .load-more-btn {
     display: flex;
-    margin: var(--space-10) auto 0;
+    margin: var(--space-12) auto 0;
     font-family: var(--font-body);
     font-size: 13.5px;
     letter-spacing: 0.3em;
