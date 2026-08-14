@@ -145,7 +145,7 @@
 
 .contact-store-address {
     grid-column: 2;
-    grid-row: 6;
+    grid-row: 3;
     min-width: 0;
     font-size: 12.5px;
     color: var(--color-text-soft);
@@ -155,11 +155,8 @@
     grid-column: 3;
     grid-row: 1 / -1;
     width: 1px;
-    grid-column: 3;
-    grid-row: 1 / -1;
-    width: 1px;
+    margin: calc(-1 * var(--space-6)) 0;
     background: var(--color-line);
-    opacity: 0.55;
 }
 
 .contact-origin-logos {
