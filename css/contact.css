@@ -125,6 +125,15 @@
     font-size: clamp(24px, 3.4vw, 30px);
     letter-spacing: 0.02em;
     color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.contact-store-logo {
+    height: 30px;
+    width: auto;
+    display: block;
 }
 
 .contact-store-divider {
@@ -272,6 +281,10 @@
 
     .contact-store-name {
         font-size: 22px;
+    }
+
+    .contact-store-logo {
+        height: 22px;
     }
 
     .contact-store-divider {
