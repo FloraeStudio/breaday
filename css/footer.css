@@ -17,9 +17,9 @@ footer {
 }
 
 .footer-logo {
-  font-family: var(--font-display-en);
-  font-size: 22px;
-  letter-spacing: 0.14em;
+  display: block;
+  height: 36px;
+  width: auto;
   margin-bottom: 16px;
 }
 
