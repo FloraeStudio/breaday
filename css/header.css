@@ -71,7 +71,7 @@ header {
 }
 
 .logo-img {
-  height: 32px;
+  height: 40px;
   width: auto;
   display: block;
 }
@@ -128,7 +128,7 @@ header {
   }
 
   .logo-img {
-    height: 24px;
+    height: 30px;
   }
 
   #site-nav {
