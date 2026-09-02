@@ -7,15 +7,20 @@ function formatPrice(price) {
   return `NT$ ${Math.round(Number(price)).toLocaleString('zh-Hant-TW')}`;
 }
 
+// export function renderPriceHtml(price, compareAtPrice) {
+//   const onSale = compareAtPrice && Number(compareAtPrice) > Number(price);
+//   if (!onSale) return `<span class="price-sale">${formatPrice(price)}</span>`;
+//   return `<span class="price-group">
+//       <span class="price-original">${formatPrice(compareAtPrice)}</span>
+//       <span class="price-sale">${formatPrice(price)}</span>
+//       <span class="price-badge">特惠</span>
+//     </span>`;
+// }
+
 export function renderPriceHtml(price, compareAtPrice) {
-  const onSale = compareAtPrice && Number(compareAtPrice) > Number(price);
-  if (!onSale) return `<span class="price-sale">${formatPrice(price)}</span>`;
-  return `<span class="price-group">
-      <span class="price-original">${formatPrice(compareAtPrice)}</span>
-      <span class="price-sale">${formatPrice(price)}</span>
-      <span class="price-badge">特惠</span>
-    </span>`;
+  return '';
 }
+
 
 export function renderProducts(container, products) {
   container.innerHTML = products.map((p, index) => {
